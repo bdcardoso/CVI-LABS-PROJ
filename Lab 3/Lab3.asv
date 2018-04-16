@@ -1,0 +1,68 @@
+close all, clear all;
+
+img = imread('BrainMRI.jpg');
+imshow(img); title('Original');
+imgg = rgb2gray(img);
+
+BW = imgg > 60;
+figure,
+subplot(2,3,1);
+imshow(BW); title('Original BW');
+se = strel('disk',3); %variaa este constante !!!
+%se = strel('line',3, 45); %variar para 'square', 'line', 'disk'
+%se = strel('square',3);
+%se = strel('ball',3);
+
+BW1 = imerode(BW, se);
+subplot(2,3,2);imshow(BW1);title('Erosão');
+
+BW2 = imdilate(BW, se);
+subplot(2,3,3);imshow(BW2);title('Dilatação');
+
+BW3 = imopen(BW, se);
+subplot(2,3,4);imshow(BW3);title('Abertura');
+
+BW4 = imclose(BW, se);
+subplot(2,3,1);imshow(BW4);title('Fecho');
+
+[lb num] = bwlabel(BW3); %estava BW3
+figure,
+%subplot(1,3,1); imshow(mat2gray(lb)); title('Etiquetas');
+subplot(1,3,1); imshow(label2rgb(lb));title('Labels')
+stats = regionprops(lb);
+areas = [stats.Area];
+[dummy indM] = max(areas);
+imgBr = (lb == indM);
+subplot(1,3,2);imshow(imgBr);title('Maior área');
+subplot(1,3,3);imshow(imgg.*uint8(imgBr));title('Cérebro');
+%alternativa
+%subplot(1,3,4);imshow(double(imgg).*(imgBr));title('Cérebro');
+
+areas = [];
+figure; imshow(lb); hold on;
+for k=1: num
+    
+    areas = [areas length(find(lb==k))]
+    plot(stats(k).Centroid(1),stats(k).Centroid(2), '.r','markersize',25);
+    drawnow;
+
+end
+figure; imshow(lb); hold on;
+[val ind] = max(areas)
+plot(stats(ind).Centroid(1),stats(ind).Centroid(2), '.r','markersize',50);
+    drawnow;
+    
+imgBr1 = (lb == ind);
+plot(1,1);imshow(imgBr1);title('Maior área');
+plot(1,2);imshow(imgg.*uint8(imgBr1));title('Cérebro');
+
+%pause
+
+
+
+
+
+
+
+
+

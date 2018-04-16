@@ -1,0 +1,15 @@
+close all, clear all
+
+%img = imread('database\rabbit.jpg');
+img = imread('database\cherry.bmp');
+
+figure,imshow(img);
+figure,imhist(img); hold on
+
+thr = graythresh(img)*255;
+thr = 75;
+plot(thr,0,'r.','markersize',15)
+bw = img>thr;
+figure, imshow(bw)
+
+
