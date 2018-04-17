@@ -1,6 +1,6 @@
 close all, clear all;
 
-img = imread('BrainMRI.jpg');
+img = imread('moedas1.jpg');
 imshow(img); title('Original');
 imgg = rgb2gray(img);
 
@@ -8,7 +8,7 @@ BW = imgg > 60;
 figure,
 subplot(2,3,1);
 imshow(BW); title('Original BW');
-se = strel('disk',3); %variaa este constante !!!
+se = strel('disk',30); %variaa este constante !!!
 %se = strel('line',3, 45); %variar para 'square', 'line', 'disk'
 %se = strel('square',3);
 %se = strel('ball',3);
