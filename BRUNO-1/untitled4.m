@@ -65,7 +65,7 @@ numberOfBoundaries = size(boundaries, 1)
 % uiwait(helpdlg(message));
 % Find minimum distance between each pair of boundaries
 for b1 = 1 : numberOfBoundaries
-	for b2 = 1 : numberOfBoundaries
+	for b2 = 2 : numberOfBoundaries
 		if b1 == b2
 			% Can't find distance between the region and itself
 			continue;
