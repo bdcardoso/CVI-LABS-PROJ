@@ -15,12 +15,12 @@ figure;imshow(I);
 c = edge(I, 'canny',0.4);  
 figure; imshow(c);         
 
-se = strel('disk',0);      
-I2 = imdilate(c,se);       
-imshow(I2);  
+%se = strel('disk',0);      
+%I2 = imdilate(c,se);       
+%imshow(I2);  
 
 
-d2 = imfill(I2, 'holes');  
+d2 = imfill(c, 'holes');  
 figure, imshow(d2);        
 
 Label=bwlabel(d2,4);
@@ -44,9 +44,67 @@ for k=1: num
     end
 
 end
+
+
 %figure; imshow(lb);title(''); hold on;
 [val ind] = max(areas)
 
+%TESTING TESTING TESTING - LIGAR OBJECTOS 
+
+boundaries = bwboundaries(d2);
+numberOfBoundaries = size(boundaries, 1);
+for k = 1 : numberOfBoundaries
+	thisBoundary = boundaries{k};
+	plot(thisBoundary(:,2), thisBoundary(:,1), 'r', 'LineWidth', 3);
+end
+hold off;
+
+% Define object boundaries
+numberOfBoundaries = size(boundaries, 1)
+% message = sprintf('Found %d boundaries', numberOfBoundaries);
+% uiwait(helpdlg(message));
+% Find minimum distance between each pair of boundaries
+for b1 = 1 : numberOfBoundaries
+	for b2 = 1 : numberOfBoundaries
+		if b1 == b2
+			% Can't find distance between the region and itself
+			continue;
+		end
+		boundary1 = boundaries{b1};
+		boundary2 = boundaries{b2};
+		boundary1x = boundary1(:, 2);
+		boundary1y = boundary1(:, 1);
+		x1=1;
+		y1=1;
+		x2=1;
+		y2=1;
+		overallMinDistance = inf; % Initialize.
+		% For every point in boundary 2, find the distance to every point in boundary 1.
+		for k = 1 : size(boundary2, 1)
+			% Pick the next point on boundary 2.
+			boundary2x = boundary2(k, 2);
+			boundary2y = boundary2(k, 1);
+			% For this point, compute distances from it to all points in boundary 1.
+			allDistances = sqrt((boundary1x - boundary2x).^2 + (boundary1y - boundary2y).^2);
+			% Find closest point, min distance.
+			[minDistance(k), indexOfMin] = min(allDistances);
+			if minDistance(k) < overallMinDistance
+				x1 = boundary1x(indexOfMin);
+				y1 = boundary1y(indexOfMin);
+				x2 = boundary2x;
+				y2 = boundary2y;
+				overallMinDistance = minDistance(k);
+			end
+		end
+		% Find the overall min distance
+		minDistance = min(minDistance);
+		% Report to command window.
+		fprintf('The minimum distance from region %d to region %d is %.3f pixels\n', b1, b2, minDistance);
+
+		% Draw a line between point 1 and 2
+		line([x1, x2], [y1, y2], 'Color', 'y', 'LineWidth', 3);
+	end
+end
 
 
 %DETECCAO DE MOEDAS DAQUI PARA BAIXO
