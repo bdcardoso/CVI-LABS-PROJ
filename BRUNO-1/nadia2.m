@@ -70,6 +70,16 @@ I2 = imread('YourData.tif');
 d2 = imfill(I2, 'holes');  
 %figure, imshow(d2);        
 
+
+SE = strel('square',3);
+SE = [0 1 0
+      1 1 1
+      0 1 0];
+BW = imdilate(d2,SE);
+
+BW2 =imerode(BW,SE);
+
+
 Label=bwlabel(d2,4);
 
 
@@ -180,7 +190,7 @@ a10=(Label==10);
 
 
 D1 = bwdist(~a1);           
-%figure, imshow(D1,[]),        
+figure, imshow(D1,[]),        
 [xc1 yc1 r1]=distance(D1);
 f1=whichcoin(r1)
 disp(r1)
