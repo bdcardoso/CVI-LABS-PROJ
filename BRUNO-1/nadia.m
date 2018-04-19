@@ -4,47 +4,29 @@ clc;
 
   
 
-I = imread('Moedas4.jpg');
-figure, imshow(I);
+I =imread('Moedas4.jpg');
 
 I=rgb2gray(I);
 
+
 [h,w]=size(I);
 figure;imshow(I);
-T1 = graythresh(I);
-%fprintf('%d',T1);
 
-
-c = edge(I, 'canny',T1);  
-figure; imshow(c); 
-
-SE = strel('square',3);
-SE = [0 1 0
-      1 1 1
-      0 1 0];
-BW = imdilate(c,SE);
-
-BW2 =imerode(BW,SE);
-%figure;imshow(BW2);
+c = edge(I, 'canny',0.4);  
+figure; imshow(c);         
 
 %se = strel('disk',0);      
 %I2 = imdilate(c,se);       
 %imshow(I2);  
 
-d1 = imfill(c, 'holes');
-d2 = imfill(BW2, 'holes');  
+
+d2 = imfill(c, 'holes');  
 %figure, imshow(d2);        
 
 Label=bwlabel(d2,4);
 
 
 [lb num] = bwlabel(d2); %estava BW3
-[lb1 num1] = bwlabel(d1); %estava BW3
-
-if num < num1
-    num = num1;
-    lb = lb1;
-end
 
 stats = regionprops(lb);
 areas = [stats.Area];
@@ -88,7 +70,7 @@ numberOfBoundaries = size(boundaries, 1)
 % Find minimum distance between each pair of boundaries
 for b1 = 1 : numberOfBoundaries
 	for b2 = 1 : numberOfBoundaries
-		if b1 >= b2
+		if b1 == b2
 			% Can't find distance between the region and itself
 			continue;
 		end
@@ -121,7 +103,6 @@ for b1 = 1 : numberOfBoundaries
 		% Find the overall min distance
 		minDistance = min(minDistance);
 		% Report to command window.
-        
 		fprintf('The minimum distance from region %d to region %d is %.3f pixels\n', b1, b2, minDistance);
 
 		% Draw a line between point 1 and 2

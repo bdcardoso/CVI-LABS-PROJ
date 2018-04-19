@@ -14,7 +14,23 @@ figure;imshow(I);
 T1 = graythresh(I);
 %fprintf('%d',T1);
 
+%expiriences
+lab_he = rgb2lab(I);
+ab = lab_he(:,:,2:3);
+nrows = size(ab,1);
+ncols = size(ab,2);
+ab = reshape(ab,nrows*ncols,2);
 
+nColors = 3;
+% repeat the clustering 3 times to avoid local minima
+[cluster_idx, cluster_center] = kmeans(ab,nColors,'distance','sqEuclidean', ...
+                                      'Replicates',3);
+% - -
+
+
+
+                                  
+        
 c = edge(I, 'canny',T1);  
 figure; imshow(c); 
 

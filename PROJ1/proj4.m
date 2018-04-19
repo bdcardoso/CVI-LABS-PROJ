@@ -1,11 +1,11 @@
 clear all; 
 close all;
 
-
-
 img = imread('Moedas4.jpg');
 figure, imshow(img);
-I = rangefilt(img,[0 1 0;1 1 1;0 1 0]);
+
+%I = rangefilt(img,[0 1 0;1 1 1;0 1 0]);
+I = imread('Moedas4.jpg');
 figure, imshow(I);
 
 figure, imhist(I(:,:,1));
