@@ -11,46 +11,54 @@ clc;
 %
 
 %get the input image
-I=imread('Moedas4.jpg');
-imshow(I),title('Image:1');
-%change the color space
-cform = makecform('srgb2lab');
-J=applycform(I,cform);
-figure;imshow(J),title('Image:2');
-%equalise brightness to get skin area
-K=J(:,:,2);% 2nd page of 3-d vector j
-figure;imshow(K),title('Image:3');
-L=graythresh(J(:,:,2));% find appropriate gray thresh value
-BW1=im2bw(J(:,:,2),L);% convert to binary image based on threshold
-figure;imshow(BW1),title('Image:4');
-bw2=imfill(BW1,'holes');% fill patches with holes
-figure;imshow(bw2)
-bw3 = bwareaopen(bw2,1890); %opens area greater than 1890
-cc=bwconncomp(bw3)% connected comp for finding the density of people in image
-density=cc.NumObjects / (size(bw3,1) * size(bw3,2))
-figure;imshow(bw3)
-labeledImage = bwlabel(bw3, 8);%same as connected components
-figure;imshow(labeledImage)
-blobMeasurements = regionprops(labeledImage,'all');%measure all properties of the image
-numberOfPeople = size(blobMeasurements, 1)% count the number of people
-% draw bounding boxes
-imagesc(I);
-
-hold on;
-title('Original with bounding boxes');
-for k = 1 : numberOfPeople % Loop through all blobs.
-% Find the mean of each blob.
-% directly into regionprops.
-thisBlobsBox = blobMeasurements(k).BoundingBox; % Get list of pixels in current blob.
-x1 = thisBlobsBox(1);%1st side
-y1 = thisBlobsBox(2);%2nd side
-x2 = x1 + thisBlobsBox(3);%3rd side
-y2 = y1 + thisBlobsBox(4);%4th side
-x = [x1 x2 x2 x1 x1];
-y = [y1 y1 y2 y2 y1];
-%subplot(3,4,2);
-plot(x, y, 'LineWidth', 2);
-end
+% I=imread('Moedas4.jpg');
+% 
+% imshow(I),title('Image:1');
+% 
+% %change the color space
+% cform = makecform('srgb2lab');
+% K=applycform(I,cform);
+% 
+% figure;imshow(K),title('Image:2');
+% 
+% %equalise brightness to get skin area
+% %K=J(:,:,2);% 2nd page of 3-d vector j
+% 
+% figure;imshow(K),title('Image:3');
+% 
+% L=graythresh(K(:,:,2));% find appropriate gray thresh value
+% BW1=im2bw(K(:,:,2),L);% convert to binary image based on threshold
+% 
+% figure;imshow(BW1),title('Image:4');
+% 
+% bw2=imfill(BW1,'holes');% fill patches with holes
+% figure;imshow(bw2)
+% bw3 = bwareaopen(bw2,1890); %opens area greater than 1890
+% cc=bwconncomp(bw3)% connected comp for finding the density of people in image
+% density=cc.NumObjects / (size(bw3,1) * size(bw3,2))
+% figure;imshow(bw3)
+% labeledImage = bwlabel(bw3, 8);%same as connected components
+% figure;imshow(labeledImage)
+% blobMeasurements = regionprops(labeledImage,'all');%measure all properties of the image
+% numberOfPeople = size(blobMeasurements, 1)% count the number of people
+% % draw bounding boxes
+% imagesc(I);
+% 
+% hold on;
+% title('Original with bounding boxes');
+% for k = 1 : numberOfPeople % Loop through all blobs.
+% % Find the mean of each blob.
+% % directly into regionprops.
+% thisBlobsBox = blobMeasurements(k).BoundingBox; % Get list of pixels in current blob.
+% x1 = thisBlobsBox(1);%1st side
+% y1 = thisBlobsBox(2);%2nd side
+% x2 = x1 + thisBlobsBox(3);%3rd side
+% y2 = y1 + thisBlobsBox(4);%4th side
+% x = [x1 x2 x2 x1 x1];
+% y = [y1 y1 y2 y2 y1];
+% %subplot(3,4,2);
+% plot(x, y, 'LineWidth', 2);
+% end
 
 
 %
@@ -58,32 +66,32 @@ end
 %SECçÃO DOS TESTES2
 %
 %
-
-A=imread('Moedas4.jpg');
-B=im2bw(A);
-C=imfill(B,'holes');
-
-label=bwlabel(C);
-max(max(label))
-im1= (label==1);
-
-for j=1:max(max(label))
-    [row, col] = find(label==j);
-    len=max(row)-min(row)+2;
-    breadth=max(col)-min(col)+2;
-    target=uint8(zeros([len breadth] ));
-    sy=min(col)-1;
-    sx=min(row)-1;
-
-    for i=1:size(row,1)
-        x=row(i,1)-sx;
-        y=col(i,1)-sy;
-        target(x,y)=A(row(i,1),col(i,1));
-    end
-    
-    mytitle=strcat('Object Number:',num2str(j));
-    figure,imshow(target);title(mytitle);
-end
+% 
+% A=imread('Moedas4.jpg');
+% B=im2bw(A);
+% C=imfill(B,'holes');
+% 
+% label=bwlabel(C);
+% max(max(label))
+% im1= (label==1);
+% 
+% for j=1:max(max(label))
+%     [row, col] = find(label==j);
+%     len=max(row)-min(row)+2;
+%     breadth=max(col)-min(col)+2;
+%     target=uint8(zeros([len breadth] ));
+%     sy=min(col)-1;
+%     sx=min(row)-1;
+% 
+%     for i=1:size(row,1)
+%         x=row(i,1)-sx;
+%         y=col(i,1)-sy;
+%         target(x,y)=A(row(i,1),col(i,1));
+%     end
+%     
+%     mytitle=strcat('Object Number:',num2str(j));
+%     figure,imshow(target);title(mytitle);
+% end
 
 
 %
@@ -96,30 +104,19 @@ end
 %https://www.mathworks.com/help/images/examples/marker-controlled-watershed-segmentation.html
 
 
-T=imread('Moedas4.jpg');
-T2=rgb2gray(T);
-
-hy = fspecial('sobel');
-hx = hy';
-Iy = imfilter(double(T2), hy, 'replicate');
-Ix = imfilter(double(T2), hx, 'replicate');
-gradmag = sqrt(Ix.^2 + Iy.^2);
-figure
-imshow(gradmag,[]), title('Gradient magnitude (gradmag)')
-
-se = strel('disk', 20);
-Io = imopen(T2, se);
-figure
-imshow(Io), title('Opening (Io)')
-
-Ie = imerode(T2, se);
-Iobr = imreconstruct(Ie, T2);
-figure
-imshow(Iobr), title('Opening-by-reconstruction (Iobr)')
+% I=imread('Moedas4.jpg');
 % 
-% Ioc = imclose(Io, se);
+% T99=rgb2gray(I);
+% T2=edge(T99,'Canny');
+% 
+% hy = fspecial('prewitt');
+% hx = hy';
+% Iy = imfilter(double(T2), hy, 'replicate');
+% Ix = imfilter(double(T2), hx, 'replicate');
+% gradmag = sqrt(Ix.^2 + Iy.^2);
 % figure
-% imshow(Ioc), title('Opening-closing (Ioc)')
+% imshow(gradmag,[]), title('Gradient magnitude (gradmag)')
+% 
 % 
 % 
 % se = strel('disk', 20);
@@ -127,63 +124,113 @@ imshow(Iobr), title('Opening-by-reconstruction (Iobr)')
 % figure
 % imshow(Io), title('Opening (Io)')
 % 
-% Iobrd = imdilate(Iobr, se);
-% Iobrcbr = imreconstruct(imcomplement(Iobrd), imcomplement(Iobr));
-% Iobrcbr = imcomplement(Iobrcbr);
+% Ie = imerode(T2, se);
+% Iobr = imreconstruct(Ie, T2);
 % figure
-% imshow(Iobrcbr), title('Opening-closing by reconstruction (Iobrcbr)')
+% imshow(Iobr), title('Opening-by-reconstruction (Iobr)')
+% % 
+% % Ioc = imclose(Io, se);
+% % figure
+% % imshow(Ioc), title('Opening-closing (Ioc)')
+% % 
+% % 
+% % se = strel('disk', 20);
+% % Io = imopen(T2, se);
+% % figure
+% % imshow(Io), title('Opening (Io)')
+% % 
+% % Iobrd = imdilate(Iobr, se);
+% % Iobrcbr = imreconstruct(imcomplement(Iobrd), imcomplement(Iobr));
+% % Iobrcbr = imcomplement(Iobrcbr);
+% % figure
+% % imshow(Iobrcbr), title('Opening-closing by reconstruction (Iobrcbr)')
+% 
+% 
+% 
+% 
+% 
+% %kernel = -1*ones(3);
+% %kernel(2,2) = 17;
+% %T = imfilter(T2, kernel);
+% 
+% %T2=im2bw(T,graythresh(T));
+% %T2=~T2;
+% 
+% %B = bwboundaries(T2);
+% B=bwboundaries(Iobr);
+% imshow(T2)
+% text(10,10,strcat('\color{green}Objects Found:',num2str(length(B))))
+% hold on
+% 
+% for k = 1:length(B)
+% boundary = B{k};
+% plot(boundary(:,2), boundary(:,1), 'g', 'LineWidth', 0.2)
+% end
+% 
+% 
+% 
+% %
+% %
+% % % NOVO TESTE
+% %
+% %
+
+% I = imread('Moedas3.jpg');
+% imshow(I)
+% axis off
+% title('Original Image')
+% 
+% thresh = multithresh(I,2);
+% seg_I = imquantize(I,thresh);
+% 
+% 
+% 
+% 
+% 
+% 
+% RGB = label2rgb(seg_I); 	 
+% figure;
+% imshow(RGB)
+% axis off
+% title('RGB Segmented Image')
+
+% %
+% %
+% % FIM SECCAO DE TESTES
+% %
+% %
 
 
-
-
-
-%kernel = -1*ones(3);
-%kernel(2,2) = 17;
-%T = imfilter(T2, kernel);
-
-%T2=im2bw(T,graythresh(T));
-%T2=~T2;
-
-%B = bwboundaries(T2);
-B=bwboundaries(Iobr);
-imshow(T2)
-text(10,10,strcat('\color{green}Objects Found:',num2str(length(B))))
-hold on
-
-for k = 1:length(B)
-boundary = B{k};
-plot(boundary(:,2), boundary(:,1), 'g', 'LineWidth', 0.2)
-end
-
-
-
-%
-%
-% FIM SECCAO DE TESTES
-%
-%
-
-I = imread('Moedas4.jpg');
+%PARTE FUNCIONAL
+I = imread('Moedas3.jpg');
 figure, imshow(I);
 
 I=rgb2gray(I);
 
 [h,w]=size(I);
+
 figure;imshow(I);
 T1 = graythresh(I);
 %fprintf('%d',T1);
 
 
-c = edge(I, 'canny',T1);  
+%c = edge(I, 'canny', T1);  
+%T1 = imgaussfilt(T1, 5);
+c = edge(I, 'canny',T1); 
+
+%EDITA-ME !!!!!
+
 figure; imshow(c); 
 
 SE = strel('square',3);
 SE = [0 1 0
       1 1 1
       0 1 0];
+  
 BW = imdilate(c,SE);
 
 BW2 =imerode(BW,SE);
+
 %figure;imshow(BW2);
 
 %se = strel('disk',0);      
@@ -213,15 +260,15 @@ n_ojb=0
 areas = [];
 figure; imshow(lb); hold on;
 
-% for k=1: num
-%     areas = [areas length(find(lb==k))]
-%     if all(areas(k)>500)
-%         plot(stats(k).Centroid(1),stats(k).Centroid(2), '.r','markersize',25);
-%         drawnow;
-%         
-%     end
-% 
-% end
+for k=1: num
+    areas = [areas length(find(lb==k))]
+    if all(areas(k)>500)
+        plot(stats(k).Centroid(1),stats(k).Centroid(2), '.r','markersize',25);
+        drawnow;
+        
+    end
+
+end
 
 
 %figure; imshow(lb);title(''); hold on;
@@ -233,7 +280,7 @@ boundaries = bwboundaries(d2);
 numberOfBoundaries = size(boundaries, 1);
 for k = 1 : numberOfBoundaries
 	thisBoundary = boundaries{k};
-	plot(thisBoundary(:,2), thisBoundary(:,1), 'r', 'LineWidth', 3);
+	plot(thisBoundary(:,2), thisBoundary(:,1), 'r', 'LineWidth', 1);
 end
 hold off;
 
@@ -284,7 +331,7 @@ for b1 = 1 : numberOfBoundaries
 		fprintf('The minimum distance from region %d to region %d is %.3f pixels\n', b1, b2, minDistance);
 
 		% Draw a line between point 1 and 2
-        color = char('r','g','b','y','m','c','w','k');
+        color = char('r','g','b','y','m','c','w');
 
 
         
@@ -292,6 +339,8 @@ for b1 = 1 : numberOfBoundaries
 		line([x1, x2], [y1, y2], 'Color', 'y', 'LineWidth', 1);
 	end
 end
+
+   
 
 %annotation('Found %d regions\n', b1,[2 3 300 200])
 fprintf('Found %d regions\n', b1);
