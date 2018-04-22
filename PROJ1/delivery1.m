@@ -203,6 +203,11 @@ clc;
 
 %PARTE FUNCIONAL
 I = imread('Moedas3.jpg');
+
+background = imopen(I,strel('disk',150));
+
+I = imsubtract(I,background);
+
 figure, imshow(I);
 
 I=rgb2gray(I);
@@ -239,11 +244,33 @@ BW2 =imerode(BW,SE);
 
 %se = strel('disk',0);      
 %I2 = imdilate(c,se);       
-%imshow(I2);  
+%imshow(I2); 
+% bw_a = padarray(I,[1 1],1,'pre');
+% bw_a_filled = imfill(bw_a,'holes');
+% bw_a_filled = bw_a_filled(2:end,2:end);
+% imshow(bw_a_filled)
+% bw_b = padarray(padarray(I,[1 0],1,'pre'),[0 1],1,'post');
+% bw_b_filled = imfill(bw_b,'holes');
+% bw_b_filled = bw_b_filled(2:end,1:end-1);
+% imshow(bw_b_filled);
+% bw_c = padarray(I,[1 1],1,'post');
+% bw_c_filled = imfill(bw_c,'holes');
+% bw_c_filled = bw_c_filled(1:end-1,1:end-1);
+% imshow(bw_c_filled)
+% bw_d = padarray(padarray(I,[1 0],1,'post'),[0 1],1,'pre');
+% bw_d_filled = imfill(bw_d,'holes');
+% bw_d_filled = bw_d_filled(1:end-1,2:end);
+% imshow(bw_d_filled)
+% bw_filled = bw_a_filled | bw_b_filled | bw_c_filled | bw_d_filled;
+% BW2 = padarray(BW2,[1 1],1,'pre');
+% BW2 = padarray(padarray(BW2,[1 0],1,'pre'),[0 1],1,'post');
+% BW2 = padarray(BW2,[1 1],1,'post');
+% BW2 = padarray(padarray(BW2,[1 0],1,'post'),[0 1],1,'pre');
+% figure;imshow(BW2);title("TESTE");
 
 d1 = imfill(c, 'holes');
 d2 = imfill(BW2, 'holes');  
-%figure, imshow(d2);        
+figure, imshow(d1);        
 
 Label=bwlabel(d2,4);
 
@@ -264,13 +291,12 @@ imgBr = (lb == indM);
 n_ojb=0
 areas = [];
 figure; imshow(lb); hold on;
-
+i = 0
 for k=1: num
     areas = [areas length(find(lb==k))]
-    if all(areas(k)>500)
-        plot(stats(k).Centroid(1),stats(k).Centroid(2), '.r','markersize',25);
-        drawnow;
-        
+    if all(areas(k)>100)
+        i = i+1;
+        text(stats(k).Centroid(1),stats(k).Centroid(2),num2str(i),'HorizontalAlignment','center','Color','r');
     end
 
 end
@@ -356,13 +382,29 @@ figure; imshow(lb);title('Area'); hold on;
 
 for k=1: num
     areas = [areas length(find(lb==k))]
-    if all(areas(k)>500)
-        text(stats(k).Centroid(1),stats(k).Centroid(2),num2str(areas(k)),'HorizontalAlignment','center');
+    if all(areas(k)>200)
+        text(stats(k).Centroid(1),stats(k).Centroid(2),num2str(areas(k)),'HorizontalAlignment','center','Color','r');
     end
 
 end
 
 hold off;
+
+figure; imshow(lb);title('Area Ordem'); hold on;
+
+areasord = sort(areas,'descend');
+
+for k=1: num
+    areas = [areas length(find(lb==k))]
+    if all(areas(k)>200)
+        i = find(areasord == areas(k));
+        text(stats(k).Centroid(1),stats(k).Centroid(2),num2str(i),'HorizontalAlignment','center','Color','r');
+    end
+
+end
+
+hold off;
+
 
 % Imprimir Perimetros
 
@@ -371,13 +413,16 @@ figure; imshow(lb);title('Perimeter'); hold on;
 
 for k=1: num
     areas = [areas length(find(lb==k))]
-    if all(areas(k)>500)
-        text(stats(k).Centroid(1),stats(k).Centroid(2),num2str(perimetros(k)),'HorizontalAlignment','center');
+    if all(areas(k)>100)
+        text(stats(k).Centroid(1),stats(k).Centroid(2),num2str(perimetros(k)),'HorizontalAlignment','center','Color','r');
     end
 
 end
 
 hold off;
+
+% Imprimir Areas
+
 
 %DETECCAO DE MOEDAS DAQUI PARA BAIXO
 
