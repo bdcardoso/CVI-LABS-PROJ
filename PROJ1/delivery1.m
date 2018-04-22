@@ -207,10 +207,18 @@ figure, imshow(I);
 
 I=rgb2gray(I);
 
+SE = strel('square',3);
+SE = [0 1 0
+      1 1 1
+      0 1 0];
+  
+
+I =imerode(I,SE);
+
 [h,w]=size(I);
 
 figure;imshow(I);
-T1 = graythresh(I);
+T1 = graythresh(I) ;
 %fprintf('%d',T1);
 
 
@@ -222,11 +230,7 @@ c = edge(I, 'canny',T1);
 
 figure; imshow(c); 
 
-SE = strel('square',3);
-SE = [0 1 0
-      1 1 1
-      0 1 0];
-  
+
 BW = imdilate(c,SE);
 
 BW2 =imerode(BW,SE);
@@ -252,8 +256,9 @@ if num < num1
     lb = lb1;
 end
 
-stats = regionprops(lb);
+stats = regionprops(lb,'Perimeter','Area','Centroid','BoundingBox');
 areas = [stats.Area];
+perimetros = [stats.Perimeter]
 [dummy indM] = max(areas);
 imgBr = (lb == indM);
 n_ojb=0
@@ -270,7 +275,6 @@ for k=1: num
 
 end
 
-
 %figure; imshow(lb);title(''); hold on;
 [val ind] = max(areas)
 
@@ -285,6 +289,7 @@ end
 hold off;
 
 fprintf('BOUNDARIES NUMBER IS %d \n',numberOfBoundaries);
+
 
 
 % Define object boundaries
@@ -337,13 +342,42 @@ for b1 = 1 : numberOfBoundaries
         
         
 		line([x1, x2], [y1, y2], 'Color', 'y', 'LineWidth', 1);
-	end
+    end
 end
 
    
 
 %annotation('Found %d regions\n', b1,[2 3 300 200])
 fprintf('Found %d regions\n', b1);
+
+% Imprimir Areas
+
+figure; imshow(lb);title('Area'); hold on;
+
+for k=1: num
+    areas = [areas length(find(lb==k))]
+    if all(areas(k)>500)
+        text(stats(k).Centroid(1),stats(k).Centroid(2),num2str(areas(k)),'HorizontalAlignment','center');
+    end
+
+end
+
+hold off;
+
+% Imprimir Perimetros
+
+figure; imshow(lb);title('Perimeter'); hold on;
+
+
+for k=1: num
+    areas = [areas length(find(lb==k))]
+    if all(areas(k)>500)
+        text(stats(k).Centroid(1),stats(k).Centroid(2),num2str(perimetros(k)),'HorizontalAlignment','center');
+    end
+
+end
+
+hold off;
 
 %DETECCAO DE MOEDAS DAQUI PARA BAIXO
 
