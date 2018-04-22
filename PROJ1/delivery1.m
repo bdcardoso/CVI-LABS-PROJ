@@ -202,7 +202,7 @@ clc;
 
 
 %PARTE FUNCIONAL
-I = imread('Moedas3.jpg');
+I = imread('Moedas4.jpg');
 
 background = imopen(I,strel('disk',150));
 
@@ -284,16 +284,16 @@ if num < num1
 end
 
 stats = regionprops(lb,'Perimeter','Area','Centroid','BoundingBox');
-areas = [stats.Area];
-perimetros = [stats.Perimeter]
-[dummy indM] = max(areas);
+Areas = [stats.Area];
+Perimetros = [stats.Perimeter]
+[dummy indM] = max(Areas);
 imgBr = (lb == indM);
 n_ojb=0
 areas = [];
 figure; imshow(lb); hold on;
 i = 0
 for k=1: num
-    areas = [areas length(find(lb==k))]
+    areas = [Areas length(find(lb==k))]
     if all(areas(k)>100)
         i = i+1;
         text(stats(k).Centroid(1),stats(k).Centroid(2),num2str(i),'HorizontalAlignment','center','Color','r');
@@ -302,7 +302,7 @@ for k=1: num
 end
 
 %figure; imshow(lb);title(''); hold on;
-[val ind] = max(areas)
+[val ind] = max(Areas)
 
 %TESTING TESTING TESTING - LIGAR OBJECTOS 
 
@@ -378,6 +378,9 @@ fprintf('Found %d regions\n', b1);
 
 % Imprimir Areas
 
+%Não imprime o "6" nesta imagem pois ele não está a fazer o calculo da area
+%bem para esse elemento
+
 figure; imshow(lb);title('Area'); hold on;
 
 for k=1: num
@@ -390,9 +393,11 @@ end
 
 hold off;
 
-figure; imshow(lb);title('Area Ordem'); hold on;
+% Imprimir Área por ordem
 
-areasord = sort(areas,'descend');
+figure; imshow(lb);title('Área Ordem'); hold on;
+
+areasord = sort(Areas,'descend');
 
 for k=1: num
     areas = [areas length(find(lb==k))]
@@ -405,16 +410,33 @@ end
 
 hold off;
 
-
 % Imprimir Perimetros
 
 figure; imshow(lb);title('Perimeter'); hold on;
 
+perisord = sort(Perimetros,'descend');
 
 for k=1: num
-    areas = [areas length(find(lb==k))]
+    areas = [Perimetros length(find(lb==k))]
     if all(areas(k)>100)
-        text(stats(k).Centroid(1),stats(k).Centroid(2),num2str(perimetros(k)),'HorizontalAlignment','center','Color','r');
+        text(stats(k).Centroid(1),stats(k).Centroid(2),num2str(areas(k)),'HorizontalAlignment','center','Color','r');
+    end
+
+end
+
+hold off;
+
+% Imprimir Perimetros por ordem
+
+figure; imshow(lb);title('Perimeter por Ordem'); hold on;
+
+perisord = sort(Perimetros,'descend');
+
+for k=1: num
+    areas = [Perimetros length(find(lb==k))]
+    if all(areas(k)>100)
+        i = find(perisord == areas(k));
+        text(stats(k).Centroid(1),stats(k).Centroid(2),num2str(i),'HorizontalAlignment','center','Color','r');
     end
 
 end
