@@ -202,7 +202,9 @@ clc;
 
 
 %PARTE FUNCIONAL
-I = imread('Moedas4.jpg');
+I = imread('Moedas3.jpg');
+
+figure, imshow(I),title("Original Image");
 
 background = imopen(I,strel('disk',150));
 
@@ -222,7 +224,7 @@ I =imerode(I,SE);
 
 [h,w]=size(I);
 
-figure;imshow(I);
+figure;imshow(I);title("Image Subtract with erode");
 T1 = graythresh(I) ;
 %fprintf('%d',T1);
 
@@ -233,7 +235,7 @@ c = edge(I, 'canny',T1);
 
 %EDITA-ME !!!!!
 
-figure; imshow(c); 
+figure; imshow(c);title("Image with edge"); 
 
 
 BW = imdilate(c,SE);
@@ -270,7 +272,7 @@ BW2 =imerode(BW,SE);
 
 d1 = imfill(c, 'holes');
 d2 = imfill(BW2, 'holes');  
-figure, imshow(d1);        
+figure, imshow(d1),title("Image fill");        
 
 Label=bwlabel(d2,4);
 
@@ -290,7 +292,7 @@ Perimetros = [stats.Perimeter]
 imgBr = (lb == indM);
 n_ojb=0
 areas = [];
-figure; imshow(lb); hold on;
+figure; imshow(lb);title("Centroid and boundaries"); hold on;
 i = 0
 for k=1: num
     areas = [Areas length(find(lb==k))]
@@ -443,8 +445,43 @@ end
 
 hold off;
 
-% Imprimir Areas
+%Contar dinheiro
 
+%Moedas aprox = Matrix n*2   n = moedas , 2 = [area perimetro]
+
+Moedas=[10838 368
+        14175 420
+        17615 468
+        15180 435
+        19375 490
+        23050 535
+        21095 512];
+    
+Valor = [0.01
+         0.02
+         0.05
+         0.10
+         0.20
+         0.50
+         1];
+
+Dinheiro = 0
+for k=1: num
+    areas = [Areas length(find(lb==k))]
+    peri = [Perimetros length(find(lb==k))]
+    if all(areas(k)>100)
+        for i=1:size(Moedas,1)
+            difArea = abs(Moedas(i) - areas(k))
+            difPeri = abs(Moedas(i+7) - peri(k))
+            if(difArea <=1000 && difPeri <= 10)
+                Dinheiro = Dinheiro + Valor(i);
+            end
+        end
+    end
+
+end
+
+fprintf('Dinheiro Total: %.3g €\n', Dinheiro);
 
 %DETECCAO DE MOEDAS DAQUI PARA BAIXO
 
