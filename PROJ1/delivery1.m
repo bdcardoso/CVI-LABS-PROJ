@@ -202,7 +202,7 @@ clc;
 
 
 %PARTE FUNCIONAL
-I = imread('Moedas3.jpg');
+I = imread('Moedas1.jpg');
 
 figure, imshow(I),title("Original Image");
 
@@ -222,6 +222,7 @@ SE = [0 1 0
 
 I =imerode(I,SE);
 
+
 [h,w]=size(I);
 
 figure;imshow(I);title("Image Subtract with erode");
@@ -240,7 +241,30 @@ figure; imshow(c);title("Image with edge");
 
 BW = imdilate(c,SE);
 
+BW = imdilate(BW,SE);
+
+BW = imdilate(BW,SE);
+
 BW2 =imerode(BW,SE);
+
+
+bw_a = padarray (BW, [1 1], 1, 'pre' );
+bw_a_filled = imfill (bw_a, 'holes' );
+bw_a_filled = bw_a_filled (2: end, 2: end);
+ 
+bw_b = padarray (padarray (BW, [1 0], 1, 'pre' ), [0 1], 1, 'post' );
+bw_b_filled = imfill (bw_b, 'holes' );
+bw_b_filled = bw_b_filled (2: end, 1: end-1);
+ 
+bw_c = padarray (BW, [1 1], 1, 'post' );
+bw_c_filled = imfill (bw_c, 'holes' );
+bw_c_filled = bw_c_filled (1: end-1,1: end-1);
+
+bw_d = padarray (padarray (BW, [1 0], 1, 'post' ), [0 1], 1, 'pre' );
+bw_d_filled = imfill (bw_d, 'holes' );
+bw_d_filled = bw_d_filled (1: end-1,2: end);
+BW3 = bw_a_filled |  bw_b_filled |  bw_c_filled |  bw_d_filled;
+
 
 %figure;imshow(BW2);
 
@@ -271,19 +295,32 @@ BW2 =imerode(BW,SE);
 % figure;imshow(BW2);title("TESTE");
 
 d1 = imfill(c, 'holes');
-d2 = imfill(BW2, 'holes');  
-figure, imshow(d1),title("Image fill");        
+d2 = imfill(BW2, 'holes'); 
+d3 = imfill(BW3, 'holes');
+
+figure, imshow(d1),title("Image D1 fill"); 
+figure, imshow(d2),title("Image D2 fill");
+figure, imshow(d3),title("Image D2 fill"); 
 
 Label=bwlabel(d2,4);
 
-
-[lb num] = bwlabel(d2); %estava BW3
-[lb1 num1] = bwlabel(d1); %estava BW3
+[lb num] = bwlabel(d3);
+[lb1 num1] = bwlabel(d2); %estava BW3
+[lb2 num2] = bwlabel(d1); %estava BW3
 
 if num < num1
     num = num1;
-    lb = lb1;
+    lb=lb1;
 end
+
+if num < num2
+    num = num2;
+    lb =lb2;
+end
+
+%fiz 3 dilates, faço 3 erodes
+
+figure;imshow(lb);
 
 stats = regionprops(lb,'Perimeter','Area','Centroid','BoundingBox');
 Areas = [stats.Area];
@@ -483,80 +520,9 @@ end
 
 fprintf('Dinheiro Total: %.3g €\n', Dinheiro);
 
-%DETECCAO DE MOEDAS DAQUI PARA BAIXO
 
-% a1=(Label==1);
-% a2=(Label==2);
-% a3=(Label==3);
-% a4=(Label==4);
-% a5=(Label==5);
-% a6=(Label==6);
-% a7=(Label==7);
-% a8=(Label==8);
-% a9=(Label==9);
-% a10=(Label==10);
-% 
-% 
-% D1 = bwdist(~a1);           
-% %figure, imshow(D1,[]),        
-% [xc1 yc1 r1]=distance(D1);
-% f1=whichcoin(r1)
-% disp(r1)
-% 
-% 
-% D2 = bwdist(~a2);           % computing minimal euclidean distance to non-white pixel 
-% %figure, imshow(D2,[]),      %  
-% [xc2 yc2 r2]=distance(D2);
-% f2=whichcoin(r2)
-% disp(r2)
-% 
-% D3 = bwdist(~a3);           % computing minimal euclidean distance to non-white pixel 
-% %figure, imshow(D3,[]),      %  
-% [xc3 yc3 r3]=distance(D3);
-% f3=whichcoin(r3)
-% disp(r3)
-% 
-% D4 = bwdist(~a4);           % computing minimal euclidean distance to non-white pixel 
-% %figure, imshow(D4,[]),      %  
-% [xc4 yc4 r4]=distance(D4);
-% f4=whichcoin(r4)
-% disp(r4)
-% 
-% D5 = bwdist(~a5);           % computing minimal euclidean distance to non-white pixel 
-% %figure, imshow(D5,[]),      %  
-% [xc5 yc5 r5]=distance(D5);
-% f5=whichcoin(r5)
-% disp(r5)
-% 
-% D6 = bwdist(~a6);           % computing minimal euclidean distance to non-white pixel 
-% %figure, imshow(D6,[]),      %  
-% [xc6 yc6 r6]=distance(D6);
-% f6=whichcoin(r6)
-% disp(r6)
-% 
-% D7 = bwdist(~a7);           % computing minimal euclidean distance to non-white pixel 
-% %figure, imshow(D7,[]),      %  
-% [xc7 yc7 r7]=distance(D7);
-% f7=whichcoin(r7)
-% disp(r7)
-% 
-% D8 = bwdist(~a8);           % computing minimal euclidean distance to non-white pixel 
-% %figure, imshow(D8,[]),      %  
-% [xc8 yc8 r8]=distance(D8);
-% f8=whichcoin(r8)
-% disp(r8)
-% 
-% D9 = bwdist(~a9);           % computing minimal euclidean distance to non-white pixel 
-% %figure, imshow(D9,[]),      %  
-% [xc9 yc9 r9]=distance(D9);
-% f9=whichcoin(r9)
-% disp(r9)
-% 
-% D10 = bwdist(~a10);           % computing minimal euclidean distance to non-white pixel 
-% %figure, imshow(D10,[]),      %  
-% [xc10 yc10 r10]=distance(D10);
-% f10=whichcoin(r10)
-% disp(r10)
-% 
-% 
-% 
+% Detectar Sharpness e ordenar por Sharpness
+
+
+
+
