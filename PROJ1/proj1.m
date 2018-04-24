@@ -2,7 +2,6 @@ close all;
 clear all; 
 clc;
 
-%PARTE FUNCIONAL
 file_name='Moedas3.jpg';
 
 I = imread(file_name);
@@ -12,8 +11,6 @@ figure, imshow(I),title('Original Image');
 background = imopen(I,strel('disk',150));
 
 I = imsubtract(I,background);
-
-%figure, imshow(I);
 
 I=rgb2gray(I);
 
@@ -28,18 +25,9 @@ I =imerode(I,SE);
 
 [h,w]=size(I);
 
-%figure;imshow(I);title('Image Subtract with erode');
 T1 = graythresh(I) ;
-%fprintf('%d',T1);
 
-%c = edge(I, 'canny', T1);  
-%T1 = imgaussfilt(T1, 5);
 c = edge(I, 'canny',T1); 
-
-%EDITA-ME !!!!!
-
-%figure; imshow(c);title('Image with edge'); 
-
 
 BW = imdilate(c,SE);
 
@@ -50,7 +38,6 @@ BW = imdilate(BW,SE);
 BW = imdilate(BW,SE);
 
 BW2 =imerode(BW,SE);
-
 
 bw_a = padarray (BW, [1 1], 1, 'pre' );
 bw_a_filled = imfill (bw_a, 'holes' );
@@ -74,17 +61,15 @@ d1 = imfill(c, 'holes');
 d2 = imfill(BW2, 'holes'); 
 d3 = imfill(BW3, 'holes');
 
-%figure, imshow(d1),title('Image D1 fill'); 
-%figure, imshow(d2),title('Image D2 fill');
-%figure, imshow(d3),title('Image D3 fill'); 
-
 Label=bwlabel(d2,4);
 
 [lb num] = bwlabel(d3);
-[lb1 num1] = bwlabel(d2); %estava BW3
-[lb2 num2] = bwlabel(d1); %estava BW3
+[lb1 num1] = bwlabel(d2); 
+[lb2 num2] = bwlabel(d1); 
+
 flag = 1;
 al = num+2;
+
 if num > num1 || num > num2
     if al > num1
         num = num1;
@@ -107,8 +92,6 @@ if flag == 1
 end
 
 
-%figure;imshow(lb);
-
 stats = regionprops(lb,'Perimeter','Area','Centroid','BoundingBox', 'ConvexHull');
 Areas = [stats.Area];
 Perimetros = [stats.Perimeter];
@@ -127,10 +110,7 @@ for k=1: num
 
 end
 
-%figure; imshow(lb);title(''); hold on;
 [val ind] = max(Areas);
-
-%TESTING TESTING TESTING - LIGAR OBJECTOS 
 
 boundaries = bwboundaries(d2);
 numberOfBoundaries = size(boundaries, 1);
@@ -146,8 +126,6 @@ fprintf('BOUNDARIES NUMBER IS %d \n',numberOfBoundaries);
 
 % Define object boundaries
 numberOfBoundaries = size(boundaries, 1);
-% message = sprintf('Found %d boundaries', numberOfBoundaries);
-% uiwait(helpdlg(message));
 % Find minimum distance between each pair of boundaries
 for b1 = 1 : numberOfBoundaries
 	for b2 = 1 : numberOfBoundaries
@@ -197,33 +175,9 @@ for b1 = 1 : numberOfBoundaries
     end
 end
 
-   
-
-%annotation('Found %d regions\n', b1,[2 3 300 200])
-%fprintf('Found %d regions\n', b1);
-
-% Imprimir Areas
-
-%Não imprime o '6' nesta imagem pois ele não está a fazer o calculo da area
-%bem para esse elemento
-
-% figure; imshow(lb);title('Area'); hold on;
-% 
-% for k=1: num
-%     areas = [areas length(find(lb==k))];
-%     if all(areas(k)>200)
-%         
-%         
-%         text(stats(k).Centroid(1),stats(k).Centroid(2),num2str(areas(k)),'HorizontalAlignment','center','Color','r');
-%     end
-% 
-% end
-% 
-% hold off;
-
 % Imprimir Área por ordem
 
-figure; imshow(lb);title('Área Ordem'); hold on;
+figure; imshow(lb);title('Área por Ordem'); hold on;
 
 areasord = sort(Areas,'descend');
 
@@ -239,25 +193,9 @@ end
 
 hold off;
 
-% Imprimir Perimetros
-% 
-% figure; imshow(lb);title('Perimeter'); hold on;
-% 
-% perisord = sort(Perimetros,'descend');
-% 
-% for k=1: num
-%     areas = [Perimetros length(find(lb==k))]
-%     if all(areas(k)>100)
-%         text(stats(k).Centroid(1),stats(k).Centroid(2),num2str(areas(k)),'HorizontalAlignment','center','Color','r');
-%     end
-% 
-% end
-% 
-% hold off;
-
 % Imprimir Perimetros por ordem
 
-figure; imshow(lb);title('Perimeter por Ordem'); hold on;
+figure; imshow(lb);title('Perimetro por Ordem'); hold on;
 
 perisord = sort(Perimetros,'descend');
 
@@ -274,8 +212,6 @@ end
 hold off;
 
 %Contar dinheiro
-
-%Moedas aprox = Matrix n*2   n = moedas , 2 = [area perimetro]
 
 Moedas=[10838 368
         14175 420
@@ -302,7 +238,6 @@ for k=1: num
             difArea = abs(Moedas(i) - areas(k));
             difPeri = abs(Moedas(i+7) - peri(k));
             if(difArea <=1000 && difPeri <= 10)
-                %fprintf('Moeda: %.3g €\n', Valor(i));
                 Dinheiro = Dinheiro + Valor(i);
             end
         end
@@ -314,14 +249,6 @@ fprintf('Dinheiro Total: %.3g €\n', Dinheiro);
 
 
 % % Detectar Sharpness e ordenar por Sharpness
-% G1 = imread('Moedas4.jpg');
-% G = double(rgb2gray(G1));
-% [Gx, Gy]=gradient(G);
-% 
-% S=sqrt(Gx.*Gx+Gy.*Gy);
-% sharpness=sum(sum(S))./(numel(Gx));
-
-
 figure; imshow(lb);title('Sharpeness por Ordem'); hold on;
 
 image = lb;
@@ -332,19 +259,19 @@ imagem = imread(file_name);
 for k=1: num
     i = (lb == k);
     image = image | i;
+
     ImCrp = imagem.*repmat(uint8(i),[1,1,3]);
     G = double(rgb2gray(ImCrp));
     [Gx, Gy]=gradient(G);
     S=sqrt(Gx.*Gx+Gy.*Gy);
     sharpness=sum(sum(S))./(numel(Gx));
+
     sharp_list(k)=sharpness;
-    %image = bwperim(image3);
     
 end
 
 ImCrp = imagem.*repmat(uint8(image),[1,1,3]);
 imshow(ImCrp);
-%imshow(rgb2gray(imagem).*uint8(image));
 
 order_list=sort(sharp_list,'descend');
 
@@ -355,40 +282,36 @@ for k=1: num
 
 end
 
-%[lbw nume] = bwlabel( double(rgb2gray(imagem)));
-
 hold off;
 
-
-
+%Select a Object
 figure, imshow(ImCrp);hold on;
 hold on
 [yCenter, xCenter] = ginput(1);
 hold off
 
-%
 b = bwboundaries(lb);
-%
+
 [L, num_Obj] = bwlabel(lb, 4);
-%
+
 for k = 1:num_Obj;
     Obj = L ==k;
 
-      bb = b{k};
+	bb = b{k};
 
-      X_obj = bb(:, 1);
-      Y_obj = bb(:, 2);
+	X_obj = bb(:, 1);
+	Y_obj = bb(:, 2);
 
-      Selec{k} = inpolygon(xCenter,yCenter,X_obj,Y_obj); 
+	Selec{k} = inpolygon(xCenter,yCenter,X_obj,Y_obj); 
   end
 
 Selec;
-%
+
 Selec = [Selec{:}];
 [value,index] = max(Selec);
-%
+
 Obj = L ==index;
-%
+
 figure, imshow(Obj);
 
 areas_list = [];
@@ -400,6 +323,8 @@ stats1 = regionprops(lbw,'Perimeter','Area','Centroid','BoundingBox', 'ConvexHul
 Areas1 = [stats1.Area];
 Perimetros1=[stats1.Perimeter]; 
 
+
+%Ordenar por a area mais aproximado
 figure; imshow(lb);title('Área Close to Object'); hold on;
 
 for k=1: num
@@ -411,16 +336,16 @@ areasord = sort(areas_list,'ascend');
 
 for k=1: num
     if all(areas(k)>200)
-        %i = find(perisord == areas(k));
         i = find(areasord == areas_list(k));
+
         texto =  strcat(strcat(num2str(i),' - '), num2str(areasord(i)));
         text(stats(k).Centroid(1),stats(k).Centroid(2),texto,'HorizontalAlignment','center','Color','r');
     end
-
 end
 
 hold off;
 
+%Ordenar por a perimetro mais aproximado
 figure; imshow(lb);title('Perimetro Close to Object'); hold on;
 
 for k=1: num
@@ -432,8 +357,8 @@ pertsord = sort(pert_list,'ascend');
 
 for k=1: num
     if all(areas(k)>200)
-        %i = find(perisord == areas(k));
         i = find(pertsord == pert_list(k));
+
         texto =  strcat(strcat(num2str(i),' - '), num2str(pertsord(i)));
         text(stats(k).Centroid(1),stats(k).Centroid(2),texto,'HorizontalAlignment','center','Color','r');
     end
