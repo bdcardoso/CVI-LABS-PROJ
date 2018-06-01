@@ -1,0 +1,1520 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>STARTING</title><meta name="generator" content="MATLAB 9.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-05-31"><meta name="DC.source" content="main.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>STARTING</h1><pre class="codeinput"><span class="keyword">function</span> main
+clear <span class="string">all</span>, close <span class="string">all</span>
+
+<span class="comment">%importing labels from txt</span>
+load <span class="string">vesselLabels.txt</span>;
+<span class="comment">%vesselsLabels(100,2);</span>
+<span class="comment">%temporal buffer 3 out of 5</span>
+
+<span class="comment">% ----------------------- CONST ------------------------- %</span>
+RegionBuffer = [];
+stepRoi = 1;
+
+<span class="comment">%baseBkg = 13; % Initial Frame: 0 %</span>
+baseNum = 13;
+
+<span class="comment">% To use txt values use nVesselLabels = nFrames + 1 %</span>
+<span class="comment">% nVesselLabels start in 1 and nFrames starts in 0  %</span>
+nTotalFrames = 1433; <span class="comment">% Total: 1433</span>
+nInitialFrame = 0000;  <span class="comment">% Initial Boat: 12</span>
+
+thr_global = 180; <span class="comment">% 180</span>
+thr_diff = 18;    <span class="comment">% 18 %60 fails detecting the boat sometimes</span>
+
+minArea = 100;  <span class="comment">% 100</span>
+maxArea = 1000; <span class="comment">% 1000</span>
+<span class="comment">%alfa = 0.10;    % 0.10</span>
+
+<span class="comment">%nFrameBkg = 1000;</span>
+
+distanceBetweenVessels = 80;
+<span class="comment">%1cm=58pixes(units)</span>
+
+bufferArr = [];
+reglist = [];
+rectangleAux = [];
+arrAllIndsRectangleAux = [];
+indsTemp = [];
+mainFigure = figure(1);
+vesselTrail = [];
+vesselTrailSREShift = [];
+<span class="comment">%numKeyFrames = 0;</span>
+vesselTrailNow = [];
+se = strel(<span class="string">'disk'</span>,3);
+vector=[];
+fileID = fopen(<span class="string">'Output_labelling.txt'</span>,<span class="string">'wb'</span>);
+fprintf(fileID,<span class="string">'%6s %2s %6s %10s %9s\n'</span>,<span class="string">'Frame Number'</span>,<span class="string">'X'</span>,<span class="string">'Y'</span>,<span class="string">'Width'</span>,<span class="string">'Height'</span>);
+fclose(fileID);
+vector =[];
+
+<span class="comment">% ---------------------- END Const ---------------------- %</span>
+
+<span class="comment">% ------------------------------------------------------- %</span>
+
+<span class="comment">% ---------------------- ROI ---------------------------- %</span>
+<span class="comment">% Remove object intersection</span>
+<span class="comment">% Faz as caixinhas</span>
+
+<span class="comment">% ------------------------------------------------------- %</span>
+<span class="comment">% --------------------- BUFFER -------------------------- %</span>
+<span class="comment">% ------------------------------------------------------- %</span>
+
+<span class="comment">% mask = zeros(dWindow);</span>
+<span class="comment">%</span>
+<span class="comment">% coords = [lin col] - ones(size(lin, 1), 1) * upLPoint + ones(length(lin), 2);</span>
+<span class="comment">% ind = dWindow(1) * (coords(:,2) - 1) + coords(:,1);</span>
+<span class="comment">% mask(ind) = ones(1, length(ind));</span>
+<span class="comment">%</span>
+<span class="comment">% reglist(j) = struct('position', rectangleAux, ...</span>
+<span class="comment">%     'ulPoint', upLPoint, 'boxDim', dWindow, 'userData', []);</span>
+<span class="comment">% reglist(j).userData = {'', 0};</span>
+
+maxBufferNum = 7;
+
+numFrameIterations = 0;
+numFrameIterationsAux = 0;
+
+bufferStructNames = [<span class="string">'a'</span>; <span class="keyword">...</span>
+    <span class="string">'b'</span>; <span class="keyword">...</span>
+    <span class="string">'c'</span>; <span class="keyword">...</span>
+    <span class="string">'d'</span>; <span class="keyword">...</span>
+    <span class="string">'e'</span>; <span class="keyword">...</span>
+    <span class="string">'f'</span>; <span class="keyword">...</span>
+    <span class="string">'g'</span>];
+
+bufferStruct = struct(<span class="string">'a'</span>, {}, <span class="keyword">...</span>
+    <span class="string">'b'</span>, {}, <span class="keyword">...</span>
+    <span class="string">'c'</span>, {}, <span class="keyword">...</span>
+    <span class="string">'d'</span>, {}, <span class="keyword">...</span>
+    <span class="string">'e'</span>, {}, <span class="keyword">...</span>
+    <span class="string">'f'</span>, {}, <span class="keyword">...</span>
+    <span class="string">'g'</span>, {});
+
+<span class="comment">%disp('Testing Buffer: ');</span>
+<span class="comment">%disp(bufferStruct);</span>
+
+<span class="comment">% ------------------------------------------------------- %</span>
+<span class="comment">% ------------------- END BUFFER ------------------------ %</span>
+<span class="comment">% ------------------------------------------------------- %</span>
+
+<span class="keyword">for</span> f = nInitialFrame : stepRoi : nTotalFrames
+
+    array_inds = [];
+    labelDraw=[];
+
+    imgfrNew = imread(sprintf(<span class="string">'../Frames/frame%.4d.jpg'</span>, <span class="keyword">...</span>
+        baseNum + f));
+<span class="comment">%     disp('-----------------------------------------------------------');</span>
+<span class="comment">%     disp('f');</span>
+<span class="comment">%     disp(f);</span>
+    <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+    <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+    <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+
+    <span class="comment">% ------------------------------------------------------ %</span>
+    <span class="comment">% Buffer Shift Lines</span>
+    <span class="comment">% ------------------------------------------------------ %</span>
+
+    <span class="comment">% if the buffer is not full, use only the length of the buffer</span>
+    <span class="keyword">if</span> numFrameIterations &lt; 8
+        numFrameIterationsAux = maxBufferNum;
+
+
+    <span class="keyword">else</span>
+        <span class="comment">%if iterations &gt; 7 the buffer is full and it's possible to shift</span>
+        numFrameIterationsAux = numFrameIterations;
+
+        bufferStruct(1).g = bufferStruct(1).f;
+        bufferStruct(1).f = bufferStruct(1).e;
+        bufferStruct(1).e = bufferStruct(1).d;
+        bufferStruct(1).d = bufferStruct(1).c;
+        bufferStruct(1).c = bufferStruct(1).b;
+        bufferStruct(1).b = bufferStruct(1).a;
+
+
+
+    <span class="keyword">end</span>
+
+
+    <span class="comment">%for mb = numFrameIterationsAux : -1 : 2</span>
+    <span class="comment">%</span>
+    <span class="comment">%bufferStruct(1).a = 1;</span>
+    <span class="comment">%s(1).b=3</span>
+    <span class="comment">%end</span>
+
+    <span class="comment">% ------------------------------------------------------ %</span>
+    <span class="comment">% END Buffer Shift Lines</span>
+    <span class="comment">% ------------------------------------------------------ %</span>
+
+    sprintf(<span class="string">'ROI %d'</span>,f);
+    hold <span class="string">off</span>
+
+    <span class="comment">% imshow(imgfrNew); %% Real image with rectangles - Background</span>
+    hold <span class="string">on</span>
+
+    imgdif = (abs(double(imgfrNew(:,:,1)))&gt;thr_global) | <span class="keyword">...</span>
+        (abs(double(imgfrNew(:,:,2))-double(imgfrNew(:,:,1)))&gt;thr_diff) | <span class="keyword">...</span>
+        (abs(double(imgfrNew(:,:,3))-double(imgfrNew(:,:,1)))&gt;thr_diff);
+
+
+    bw = imclose(imgdif,se);
+    str = sprintf(<span class="string">'Frame: %d'</span>,f);
+    title(str);
+
+    <span class="comment">% ----------------------------------------------------------- %</span>
+    <span class="comment">%imshow(bw);  %%Mete Background preto ao mesmo tempo</span>
+    <span class="comment">% ----------------------------------------------------------- %</span>
+
+    <span class="comment">% ----------------------------------------------------------- %</span>
+    imshow(imgfrNew);  <span class="comment">%%</span>
+    <span class="comment">% ----------------------------------------------------------- %</span>
+
+    [lb num]=bwlabel(bw);
+    regionProps = regionprops(lb,<span class="string">'area'</span>,<span class="string">'FilledImage'</span>,<span class="string">'Centroid'</span>);
+
+    <span class="comment">%inds = find(minArea &lt; [regionProps.Area] &lt; maxArea);</span>
+    inds = [];
+    <span class="keyword">for</span> k = 1 : length(regionProps)
+        <span class="keyword">if</span> find([regionProps(k).Area] &lt; maxArea &amp; [regionProps(k).Area] &gt; minArea)
+            inds = [inds k];
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+    regnum = length(inds);
+    <span class="comment">% ----------------------------------------------------------- %</span>
+    <span class="comment">%     disp('f/inds/regnum');</span>
+    <span class="comment">%     disp(f);</span>
+    <span class="comment">%     disp(inds);</span>
+    <span class="comment">%     disp(regnum);</span>
+    <span class="comment">% ----------------------------------------------------------- %</span>
+    <span class="keyword">if</span> regnum
+
+        <span class="comment">% ------------------------------------------------------ %</span>
+        <span class="comment">% Spatial Validation Algorithm</span>
+        <span class="comment">% ------------------------------------------------------ %</span>
+
+
+        <span class="keyword">for</span> k=1:regnum
+            <span class="keyword">for</span> m=1:regnum
+                <span class="keyword">if</span> k ~= m
+                    <span class="comment">%run all inds to search for inds that are too close</span>
+                    vesselAX = regionProps(inds(k)).Centroid(1,1);
+                    vesselAY = regionProps(inds(k)).Centroid(1,2);
+                    vesselBX = regionProps(inds(m)).Centroid(1,1);
+                    vesselBY = regionProps(inds(m)).Centroid(1,2);
+
+                    distBetweenVessels = [vesselAX, vesselAY; <span class="keyword">...</span>
+                        vesselBX, vesselBY];
+                    pdistBetweenVessels = pdist(distBetweenVessels, <span class="string">'euclidean'</span>);
+                    <span class="comment">%                    disp('dist');</span>
+                    <span class="comment">%                    disp(pdistBetweenVessels);</span>
+
+                    <span class="comment">% ----------- Test Grafic Distance ------------------- %</span>
+
+<span class="comment">%                     boatDistance = [];</span>
+<span class="comment">%</span>
+<span class="comment">%                     x = boatDistance; % Distance</span>
+<span class="comment">%                     y1 = sin(x);       % SRE</span>
+<span class="comment">%                     y2 = sin(x-0.25);  % TVA</span>
+<span class="comment">%                     y3 = sin(x-0.5);   % Something</span>
+<span class="comment">%</span>
+<span class="comment">%                     figure</span>
+<span class="comment">%                     plot(x,y1,x,y2,'--',x,y3,':')</span>
+                    <span class="comment">% --------------------------------------------------- %</span>
+
+                    <span class="keyword">if</span> pdistBetweenVessels &lt; distanceBetweenVessels
+                        <span class="comment">%disp('entrou');</span>
+                        <span class="comment">%remove inds k and m from inds</span>
+
+                        <span class="comment">%ind = [1 4 7] ; % indices to be removed</span>
+                        <span class="comment">%A(ind) = []; % remove</span>
+
+                        <span class="comment">%array_inds array to put vessels that are too close</span>
+                        <span class="comment">%to other vessels</span>
+
+                        <span class="comment">%detecting if k and m are in array_inds</span>
+                        arrayDetection = ismember([k m],array_inds);
+                        <span class="keyword">if</span> f == 82
+                            f=f;
+                        <span class="keyword">end</span>
+                        <span class="comment">%k is not find on array_inds</span>
+                        <span class="keyword">if</span> arrayDetection(1,1) == 0
+                            array_inds = [array_inds k];
+                        <span class="keyword">end</span>
+
+                        <span class="comment">%m is not find on array_inds</span>
+                        <span class="keyword">if</span> arrayDetection(1,2) == 0
+                            array_inds = [array_inds m];
+                        <span class="keyword">end</span>
+                    <span class="keyword">end</span>
+                <span class="keyword">end</span>
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+
+        <span class="comment">% ------------------------------------------------------ %</span>
+        <span class="comment">% END Spatial Validation Algorithm</span>
+        <span class="comment">% ------------------------------------------------------ %</span>
+
+        <span class="comment">%         disp('regnumCalisto');</span>
+        <span class="comment">%         disp(regnum);</span>
+        <span class="comment">%all vessels processed</span>
+        allInds = inds;
+        <span class="comment">% ----------------------------------------------------------- %</span>
+        <span class="comment">%         disp('array_inds');</span>
+        <span class="comment">%         disp(array_inds);</span>
+        <span class="comment">%         disp('allInds');</span>
+        <span class="comment">%         disp(allInds);</span>
+        <span class="comment">% ----------------------------------------------------------- %</span>
+        <span class="comment">%         allInds = unique(array_inds);</span>
+        <span class="comment">%         withoutDuplicates = unique(array_inds);</span>
+        allInds(array_inds) = [];
+        <span class="comment">%         allInds = withoutDuplicates;</span>
+
+        <span class="comment">% ----------------------------------------------------------- %</span>
+
+        <span class="comment">%         disp('POSallInds');</span>
+        <span class="comment">%         disp(allInds);</span>
+        <span class="comment">% ----------------------------------------------------------- %</span>
+
+        <span class="comment">% NOW allInds have only vessels aproved by spacial validation algoritm</span>
+
+        <span class="comment">%%USE if spacial validation is not used, to check if is true</span>
+        <span class="comment">%array_inds = inds;</span>
+
+        <span class="comment">% ----------------------------------------------------------- %</span>
+        <span class="comment">%%%Temporal Buffer</span>
+        <span class="comment">% ----------------------------------------------------------- %</span>
+        <span class="comment">%%change buffer lines from 1-6 to 2-7</span>
+        <span class="comment">%%frame 7 will be overwriten</span>
+
+
+
+        <span class="comment">% ------------------------------------------------------ %</span>
+        <span class="comment">% Temporal Validation Algorithm</span>
+        <span class="comment">% ------------------------------------------------------ %</span>
+
+        <span class="comment">% Converting from lin col to rectangle format</span>
+        <span class="comment">% bufferStruct</span>
+        regnumAllInds = length(allInds);
+        <span class="comment">%if existes regions to filter with temporal algorithm</span>
+        <span class="keyword">if</span> regnumAllInds
+            arrAllIndsRectangleAux = [];
+            <span class="keyword">for</span> j = 1 : regnumAllInds
+                [lin, col] = find(lb == allInds(j));
+                upLPoint = min([lin col]);
+                dWindow  = max([lin col]) - upLPoint + 1;
+                <span class="comment">%structBufferLine = []; %% First buffer line TOFIX</span>
+                rectangleAux = [fliplr(upLPoint) fliplr(dWindow)];
+
+                <span class="comment">% add the rectangleAux to arrAllIndsRectangleAux</span>
+                arrAllIndsRectangleAux = [arrAllIndsRectangleAux; rectangleAux];
+<span class="comment">%                 disp ('arrAllIndsRectangleAux');</span>
+<span class="comment">%                 disp (arrAllIndsRectangleAux);</span>
+
+            <span class="keyword">end</span>
+            <span class="comment">% add the arrAllIndsRectangleAux to buffer first line</span>
+
+
+            <span class="comment">%if numFrameIterations &lt; 7 buffer is not full</span>
+            <span class="keyword">if</span> numFrameIterations &lt; 7
+                numFrameIterationsAux = maxBufferNum;
+
+
+                <span class="comment">%%%%%%%%%%%%To REcode</span>
+                <span class="keyword">if</span> numFrameIterations == 0
+                    bufferStruct(1).g = arrAllIndsRectangleAux;
+                <span class="keyword">end</span>
+                <span class="keyword">if</span> numFrameIterations == 1
+                    bufferStruct(1).f = arrAllIndsRectangleAux;
+                <span class="keyword">end</span>
+                <span class="keyword">if</span> numFrameIterations == 2
+                    bufferStruct(1).e = arrAllIndsRectangleAux;
+                <span class="keyword">end</span>
+                <span class="keyword">if</span> numFrameIterations == 3
+                    bufferStruct(1).d = arrAllIndsRectangleAux;
+                <span class="keyword">end</span>
+                <span class="keyword">if</span> numFrameIterations == 4
+                    bufferStruct(1).c = arrAllIndsRectangleAux;
+                <span class="keyword">end</span>
+                <span class="keyword">if</span> numFrameIterations == 5
+                    bufferStruct(1).b = arrAllIndsRectangleAux;
+                <span class="keyword">end</span>
+            <span class="keyword">else</span>
+
+                bufferStruct(1).a = arrAllIndsRectangleAux;
+
+<span class="comment">%                 disp('My Buffer Struct: ');</span>
+<span class="comment">%                 disp(bufferStruct(1));</span>
+            <span class="keyword">end</span>
+            <span class="comment">%             disp('My Buffer Struct: ');</span>
+            <span class="comment">%             disp(bufferStruct(1).g);</span>
+
+
+            <span class="comment">%%%%%%%%%%%%EndTo REcode</span>
+            <span class="comment">% ----------------------------------------------------------- %</span>
+            <span class="comment">%   filtering vessels to know what to print</span>
+            <span class="comment">% ----------------------------------------------------------- %</span>
+            <span class="comment">% bufferStruct(1).a has the possible vessels to print</span>
+
+            <span class="comment">%%calculates the number of occurencies of vessels in Layers A on</span>
+            <span class="comment">%%other Layers</span>
+
+<span class="comment">%             disp ('bufferStruct(1).a');</span>
+<span class="comment">%             disp (bufferStruct(1).a);</span>
+            [colA,n] = size(bufferStruct(1).a);
+            vesselOcurrencies = zeros(1,colA);
+
+
+            vesselOcurrencies = vesselOcurrencies + foundOnBufferLayer(bufferStruct(1).a,bufferStruct(1).b);
+
+             vesselOcurrencies = vesselOcurrencies + foundOnBufferLayer(bufferStruct(1).a,bufferStruct(1).c);
+
+            vesselOcurrencies = vesselOcurrencies + foundOnBufferLayer(bufferStruct(1).a,bufferStruct(1).d);
+
+            vesselOcurrencies = vesselOcurrencies + foundOnBufferLayer(bufferStruct(1).a,bufferStruct(1).e);
+
+<span class="comment">%             vesselOcurrencies = vesselOcurrencies + foundOnBufferLayer(bufferStruct(1).a,bufferStruct(1).f);</span>
+<span class="comment">%</span>
+<span class="comment">%             vesselOcurrencies = vesselOcurrencies + foundOnBufferLayer(bufferStruct(1).a,bufferStruct(1).g);</span>
+            <span class="comment">%%NOW vesselOcurrencies has counter with numbers of ocurrencies in</span>
+            <span class="comment">%%of the vessels in first layer with the rest of the buffer</span>
+
+            indsTemp = [];
+            <span class="keyword">for</span> r=1:colA
+                  <span class="comment">% -----------------3 out of 5-------------------- %</span>
+                <span class="keyword">if</span> vesselOcurrencies(1,r) &gt; 3
+                    indsTemp = [indsTemp r];
+                <span class="keyword">end</span>
+            <span class="keyword">end</span>
+            <span class="comment">%BufferStruct is incremented because buffer will be incremented</span>
+            numFrameIterations = numFrameIterations + 1;
+
+
+
+
+
+            <span class="comment">% ------------------------------------------------------ %</span>
+            <span class="comment">% END Temporal Validation Algorithm</span>
+            <span class="comment">% ------------------------------------------------------ %</span>
+
+            <span class="comment">% ----------------------------------------------------------- %</span>
+            <span class="comment">%doing boxes on approved inds</span>
+            <span class="comment">% ----------------------------------------------------------- %</span>
+
+            <span class="comment">%regnumAllInds = length(allInds); % change variables</span>
+
+            <span class="comment">%number of yellow boxes to print</span>
+            <span class="comment">%         if numFrameIterations &gt; 7</span>
+            [nIndsTemp,m] = size(indsTemp);
+            <span class="comment">%             regnumbufferStruct = m;</span>
+
+            <span class="comment">%%%if bufferStruct(1).a is a matrix</span>
+            <span class="comment">%             if regnumbufferStruct &gt; 1</span>
+            <span class="comment">%if regnumAllInds % change variables</span>
+            <span class="comment">%structBufferLine = [];</span>
+            <span class="keyword">for</span> j=1: 1: nIndsTemp <span class="comment">% change variables</span>
+                <span class="comment">%                 [lin, col] = find(lb == allInds(j));</span>
+                <span class="comment">%                 upLPoint = min([lin col]);</span>
+                <span class="comment">%                 dWindow  = max([lin col]) - upLPoint + 1;</span>
+                <span class="comment">%structBufferLine = []; %% First buffer line TOFIX</span>
+
+                <span class="comment">%                 rectangle('Position',[fliplr(upLPoint) fliplr(dWindow)],'EdgeColor',[1 1 0],...</span>
+                <span class="comment">%                     'linewidth',2);</span>
+<span class="comment">%                 disp ('Element to draw');</span>
+<span class="comment">%                 disp (bufferStruct(1).a(indsTemp(1,j),:));</span>
+            <span class="keyword">if</span> nIndsTemp == 2
+                z = f;
+            <span class="keyword">end</span>
+                vesselTrailNow = bufferStruct(1).a(indsTemp(1,j),:);
+
+
+                <span class="comment">%%%Temporal Buffer</span>
+                <span class="comment">%%add regionProps to j(index) of the buffer</span>
+            <span class="keyword">end</span>
+
+            <span class="comment">%             else</span>
+            <span class="comment">%                 reglist = struct([]);</span>
+            <span class="comment">%             end</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+    [linLabel colLabel] = find (vesselLabels(:,1) == f+14);
+
+    <span class="keyword">if</span> colLabel == 1
+        labelDraw = [labelDraw vesselLabels(linLabel,2:5)];
+    <span class="keyword">end</span>
+    isnotempty = 0;
+    <span class="keyword">if</span> ~isempty(labelDraw)
+        <span class="keyword">if</span> ~isempty(vesselTrailNow)
+            isnotempty = 1;
+            <span class="comment">%se o width for negativo</span>
+            <span class="keyword">if</span> labelDraw(3) &lt; 0
+                labelDraw(1)=labelDraw(1) + labelDraw(3);
+                labelDraw(3) = abs(labelDraw(3));
+            <span class="keyword">end</span>
+            <span class="comment">%se o height for negativo</span>
+            <span class="keyword">if</span> labelDraw(4) &lt; 0
+                labelDraw(2)=labelDraw(2) + labelDraw(4);
+                labelDraw(4) = abs(labelDraw(4));
+            <span class="keyword">end</span>
+
+            vesselTrail = [vesselTrail; f+1 labelDraw];
+            vesselTrailSREShift = [vesselTrailSREShift; f * 1.10 + 1 labelDraw];
+
+            disp(<span class="string">'Vessel Trail SRE Shift: '</span>);
+            disp(vesselTrailSREShift);
+
+            disp(<span class="string">'Vessel Trail Normal: '</span>);
+            disp(vesselTrail);
+
+            A = [f+1; labelDraw(1); labelDraw(2); labelDraw(3); labelDraw(4)];
+
+            vector=[vector bboxOverlapRatio(labelDraw, vesselTrailNow)];
+            rectangle(<span class="string">'Position'</span>, labelDraw,<span class="string">'EdgeColor'</span>,[0 1 0],<span class="string">'linewidth'</span>,2);
+
+            labelDraw1R = labelDraw;
+            labelDraw1R(1) = labelDraw(1) + labelDraw(1) * 0.10;
+            labelDraw1R(3) = labelDraw(3) * 0.80;
+            labelDraw1R(4) = labelDraw(4) * 0.80;
+
+            labelDraw1U = labelDraw;
+            labelDraw1U(2) = labelDraw(2) + labelDraw(2) * 0.10;
+            labelDraw1U(3) = labelDraw(3) * 0.80;
+            labelDraw1U(4) = labelDraw(4) * 0.80;
+
+            labelDraw1D = labelDraw;
+            labelDraw1D(1) = labelDraw(1) + labelDraw(1) * 0.10;
+            labelDraw1D(2) = labelDraw(2) + labelDraw(2) * 0.10;
+            labelDraw1D(3) = labelDraw(3) * 0.80;
+            labelDraw1D(4) = labelDraw(4) * 0.80;
+
+            labelDraw2R = labelDraw;
+            labelDraw2R(1) = labelDraw(1) + labelDraw(1) * 0.10;
+            labelDraw2R(3) = labelDraw(3) * 0.90;
+            labelDraw2R(4) = labelDraw(4) * 0.90;
+
+            labelDraw2U = labelDraw;
+            labelDraw2U(2) = labelDraw(2) + labelDraw(2) * 0.10;
+            labelDraw2U(3) = labelDraw(3) * 0.90;
+            labelDraw2U(4) = labelDraw(4) * 0.90;
+
+            labelDraw2D = labelDraw;
+            labelDraw2D(1) = labelDraw(1) + labelDraw(1) * 0.10;
+            labelDraw2D(2) = labelDraw(2) + labelDraw(2) * 0.10;
+            labelDraw2D(3) = labelDraw(3) * 0.90;
+            labelDraw2D(4) = labelDraw(4) * 0.90;
+
+            labelDraw3R = labelDraw;
+            labelDraw3R(1) = labelDraw(1) + labelDraw(1) * 0.10;
+            labelDraw3R(3) = labelDraw(3) * 1.10;
+            labelDraw3R(4) = labelDraw(4) * 1.10;
+
+            labelDraw3U = labelDraw;
+            labelDraw3U(2) = labelDraw(2) + labelDraw(2) * 0.10;
+            labelDraw3U(3) = labelDraw(3) * 1.10;
+            labelDraw3U(4) = labelDraw(4) * 1.10;
+
+            labelDraw3D = labelDraw;
+            labelDraw3D(1) = labelDraw(1) + labelDraw(1) * 0.10;
+            labelDraw3D(2) = labelDraw(2) + labelDraw(2) * 0.10;
+            labelDraw3D(3) = labelDraw(3) * 1.10;
+            labelDraw3D(4) = labelDraw(4) * 1.10;
+
+            labelDraw4R = labelDraw;
+            labelDraw4R(1) = labelDraw(1) + labelDraw(1) * 0.10;
+            labelDraw4R(3) = labelDraw(3) * 1.20;
+            labelDraw4R(4) = labelDraw(4) * 1.20;
+
+            labelDraw4U = labelDraw;
+            labelDraw4U(2) = labelDraw(2) + labelDraw(2) * 0.10;
+            labelDraw4U(3) = labelDraw(3) * 1.20;
+            labelDraw4U(4) = labelDraw(4) * 1.20;
+
+            labelDraw4D = labelDraw;
+            labelDraw4D(1) = labelDraw(1) + labelDraw(1) * 0.10;
+            labelDraw4D(2) = labelDraw(2) + labelDraw(2) * 0.10;
+            labelDraw4D(3) = labelDraw(3) * 1.20;
+            labelDraw4D(4) = labelDraw(4) * 1.20;
+
+            rectangle(<span class="string">'Position'</span>,vesselTrailNow,<span class="string">'EdgeColor'</span>,[1 1 0],<span class="keyword">...</span>
+                    <span class="string">'linewidth'</span>,2);
+
+
+
+        <span class="keyword">else</span>
+            vector=[vector 0];
+        <span class="keyword">end</span>
+    <span class="keyword">else</span>
+        vector=[vector 0];
+    <span class="keyword">end</span>
+
+<span class="comment">%     mFigureSRE = figure('Name','SRE')</span>
+<span class="comment">%     title('Graphic')</span>
+<span class="comment">%     xlabel('Distance')    % x-axis label</span>
+<span class="comment">%     ylabel('Percentage')  % y-axis label</span>
+<span class="comment">%     plot(vesselTrailNow);</span>
+<span class="comment">%     grid on</span>
+<span class="comment">%     grid minor</span>
+    <span class="comment">%xlim([0 1000]); % x-axis limits</span>
+    <span class="comment">%ylim([-0.4 0.8]); % y-axis limits</span>
+
+
+
+    drawnow
+
+<span class="keyword">end</span>
+<span class="comment">% mFigure = figure('Name','IoU')</span>
+<span class="comment">% title(ax1,'Graphic')</span>
+<span class="comment">% xlabel('???????') % x-axis label</span>
+<span class="comment">% ylabel('Ratio') % y-axis label</span>
+<span class="comment">% plot(vector);</span>
+<span class="comment">% grid on</span>
+<span class="comment">% grid minor</span>
+<span class="comment">%xlim([0 1000]); % x-axis limits</span>
+<span class="comment">%ylim([-0.4 0.8]); % y-axis limits</span>
+
+mFigureSRE = figure(<span class="string">'Name'</span>,<span class="string">'SRE: Success Plot'</span>)
+title(<span class="string">'Graphic'</span>)
+xlabel(<span class="string">'Distance'</span>)    <span class="comment">% x-axis label</span>
+ylabel(<span class="string">'Frames'</span>)      <span class="comment">% y-axis label</span>
+plot(labelDraw1R);
+grid <span class="string">on</span>
+grid <span class="string">minor</span>
+
+mFigureSRE = figure(<span class="string">'Name'</span>,<span class="string">'SRE: Success Plot'</span>)
+title(<span class="string">'Graphic'</span>)
+xlabel(<span class="string">'Distance'</span>)    <span class="comment">% x-axis label</span>
+ylabel(<span class="string">'Frames'</span>)      <span class="comment">% y-axis label</span>
+plot(labelDraw1U);
+grid <span class="string">on</span>
+grid <span class="string">minor</span>
+
+mFigureSRE = figure(<span class="string">'Name'</span>,<span class="string">'SRE: Success Plot'</span>)
+title(<span class="string">'Graphic'</span>)
+xlabel(<span class="string">'Distance'</span>)    <span class="comment">% x-axis label</span>
+ylabel(<span class="string">'Frames'</span>)      <span class="comment">% y-axis label</span>
+plot(labelDraw1D);
+grid <span class="string">on</span>
+grid <span class="string">minor</span>
+
+mFigureSRE = figure(<span class="string">'Name'</span>,<span class="string">'SRE: Success Plot'</span>)
+title(<span class="string">'Graphic'</span>)
+xlabel(<span class="string">'Distance'</span>)    <span class="comment">% x-axis label</span>
+ylabel(<span class="string">'Frames'</span>)      <span class="comment">% y-axis label</span>
+plot(labelDraw2R);
+grid <span class="string">on</span>
+grid <span class="string">minor</span>
+
+mFigureSRE = figure(<span class="string">'Name'</span>,<span class="string">'SRE: Success Plot'</span>)
+title(<span class="string">'Graphic'</span>)
+xlabel(<span class="string">'Distance'</span>)    <span class="comment">% x-axis label</span>
+ylabel(<span class="string">'Frames'</span>)      <span class="comment">% y-axis label</span>
+plot(labelDraw2U);
+grid <span class="string">on</span>
+grid <span class="string">minor</span>
+
+mFigureSRE = figure(<span class="string">'Name'</span>,<span class="string">'SRE: Success Plot'</span>)
+title(<span class="string">'Graphic'</span>)
+xlabel(<span class="string">'Distance'</span>)    <span class="comment">% x-axis label</span>
+ylabel(<span class="string">'Frames'</span>)      <span class="comment">% y-axis label</span>
+plot(labelDraw2D);
+grid <span class="string">on</span>
+grid <span class="string">minor</span>
+
+mFigureSRE = figure(<span class="string">'Name'</span>,<span class="string">'SRE: Success Plot'</span>)
+title(<span class="string">'Graphic'</span>)
+xlabel(<span class="string">'Distance'</span>)    <span class="comment">% x-axis label</span>
+ylabel(<span class="string">'Frames'</span>)      <span class="comment">% y-axis label</span>
+plot(labelDraw3R);
+grid <span class="string">on</span>
+grid <span class="string">minor</span>
+
+mFigureSRE = figure(<span class="string">'Name'</span>,<span class="string">'SRE: Success Plot'</span>)
+title(<span class="string">'Graphic'</span>)
+xlabel(<span class="string">'Distance'</span>)    <span class="comment">% x-axis label</span>
+ylabel(<span class="string">'Frames'</span>)      <span class="comment">% y-axis label</span>
+plot(labelDraw3U);
+grid <span class="string">on</span>
+grid <span class="string">minor</span>
+
+mFigureSRE = figure(<span class="string">'Name'</span>,<span class="string">'SRE: Success Plot'</span>)
+title(<span class="string">'Graphic'</span>)
+xlabel(<span class="string">'Distance'</span>)    <span class="comment">% x-axis label</span>
+ylabel(<span class="string">'Frames'</span>)      <span class="comment">% y-axis label</span>
+plot(labelDraw3D);
+grid <span class="string">on</span>
+grid <span class="string">minor</span>
+
+mFigureSRE = figure(<span class="string">'Name'</span>,<span class="string">'SRE: Success Plot'</span>)
+title(<span class="string">'Graphic'</span>)
+xlabel(<span class="string">'Distance'</span>)    <span class="comment">% x-axis label</span>
+ylabel(<span class="string">'Frames'</span>)      <span class="comment">% y-axis label</span>
+plot(labelDraw4R);
+grid <span class="string">on</span>
+grid <span class="string">minor</span>
+
+mFigureSRE = figure(<span class="string">'Name'</span>,<span class="string">'SRE: Success Plot'</span>)
+title(<span class="string">'Graphic'</span>)
+xlabel(<span class="string">'Distance'</span>)    <span class="comment">% x-axis label</span>
+ylabel(<span class="string">'Frames'</span>)      <span class="comment">% y-axis label</span>
+plot(labelDraw4U);
+grid <span class="string">on</span>
+grid <span class="string">minor</span>
+
+mFigureSRE = figure(<span class="string">'Name'</span>,<span class="string">'SRE: Success Plot'</span>)
+title(<span class="string">'Graphic'</span>)
+xlabel(<span class="string">'Distance'</span>)    <span class="comment">% x-axis label</span>
+ylabel(<span class="string">'Frames'</span>)      <span class="comment">% y-axis label</span>
+plot(labelDraw4D);
+grid <span class="string">on</span>
+grid <span class="string">minor</span>
+
+
+<span class="keyword">end</span>
+
+
+<span class="comment">% ------------------------------------------------------ %</span>
+<span class="comment">% Function foundOnBufferLayer( layerA, layerN )</span>
+<span class="comment">% ------------------------------------------------------ %</span>
+
+<span class="comment">%input layer a and other layer and as output vector with number of</span>
+<span class="comment">%proximities found</span>
+<span class="keyword">function</span> bufferCount = foundOnBufferLayer( layerA, layerN )
+<span class="comment">%%%Layer A is bufferStruct(1).a</span>
+<span class="comment">%%%if bufferStruct(1).a is a matrix</span>
+[p,q] = size(layerA);
+[r,s] = size(layerN);
+colLayerA = p;
+colLayerN = r;
+bufferCount = zeros(1,p);
+distanceBetweenVessels = 50;
+<span class="comment">%LayerA is a Matrix</span>
+
+<span class="comment">%k index in buffer.a</span>
+<span class="keyword">for</span> k=1:colLayerA
+    isFirstLayer = false;
+    <span class="keyword">for</span> m=1:colLayerN
+
+        vesselA = layerA(k,:);
+        vesselN = layerN(m,:);
+        <span class="comment">%search if A(k) and N(m) vessels are close</span>
+        vesselAX = vesselA(1)+vesselA(3)/2;
+        vesselAY = vesselA(2)+vesselA(4)/2;
+        vesselNX = vesselN(1)+vesselN(3)/2;
+        vesselNY = vesselN(2)+vesselN(4)/2;
+        distBetweenVessels = [vesselAX, vesselAY; <span class="keyword">...</span>
+            vesselNX, vesselNY];
+        pdistBetweenVessels = pdist(distBetweenVessels, <span class="string">'euclidean'</span>);
+
+        <span class="keyword">if</span> pdistBetweenVessels &lt; distanceBetweenVessels
+            isFirstLayer = true;
+            <span class="keyword">if</span> isFirstLayer == true
+                bufferCount(k) = bufferCount(k) + 1;
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">end</span>
+</pre><pre class="codeoutput error">Error using imread&gt;get_full_filename (line 516)
+File "../Frames/frame0013.jpg" does not exist.
+
+Error in imread (line 340)
+    fullname = get_full_filename(filename);
+
+Error in main (line 107)
+    imgfrNew = imread(sprintf('../Frames/frame%.4d.jpg', ...
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% STARTING
+
+function main
+clear all, close all
+
+%importing labels from txt
+load vesselLabels.txt;
+%vesselsLabels(100,2);
+%temporal buffer 3 out of 5
+
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH- CONST REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH- %
+RegionBuffer = [];
+stepRoi = 1;
+
+%baseBkg = 13; % Initial Frame: 0 %
+baseNum = 13;
+
+% To use txt values use nVesselLabels = nFrames + 1 %
+% nVesselLabels start in 1 and nFrames starts in 0  %
+nTotalFrames = 1433; % Total: 1433
+nInitialFrame = 0000;  % Initial Boat: 12
+
+thr_global = 180; % 180
+thr_diff = 18;    % 18 %60 fails detecting the boat sometimes
+
+minArea = 100;  % 100
+maxArea = 1000; % 1000
+%alfa = 0.10;    % 0.10
+
+%nFrameBkg = 1000;
+
+distanceBetweenVessels = 80;
+%1cm=58pixes(units)
+
+bufferArr = [];
+reglist = [];
+rectangleAux = [];
+arrAllIndsRectangleAux = [];
+indsTemp = [];
+mainFigure = figure(1);
+vesselTrail = [];
+vesselTrailSREShift = [];
+%numKeyFrames = 0;
+vesselTrailNow = [];
+se = strel('disk',3);
+vector=[];
+fileID = fopen('Output_labelling.txt','wb');
+fprintf(fileID,'%6s %2s %6s %10s %9s\n','Frame Number','X','Y','Width','Height');
+fclose(fileID);
+vector =[];
+
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH END Const REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH %
+
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH- %
+
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH ROI REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH %
+% Remove object intersection
+% Faz as caixinhas
+
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH- %
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH- BUFFER REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH %
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH- %
+
+% mask = zeros(dWindow);
+%
+% coords = [lin col] - ones(size(lin, 1), 1) * upLPoint + ones(length(lin), 2);
+% ind = dWindow(1) * (coords(:,2) - 1) + coords(:,1);
+% mask(ind) = ones(1, length(ind));
+%
+% reglist(j) = struct('position', rectangleAux, ...
+%     'ulPoint', upLPoint, 'boxDim', dWindow, 'userData', []);
+% reglist(j).userData = {'', 0};
+
+maxBufferNum = 7;
+
+numFrameIterations = 0;
+numFrameIterationsAux = 0;
+
+bufferStructNames = ['a'; ...
+    'b'; ...
+    'c'; ...
+    'd'; ...
+    'e'; ...
+    'f'; ...
+    'g'];
+
+bufferStruct = struct('a', {}, ...
+    'b', {}, ...
+    'c', {}, ...
+    'd', {}, ...
+    'e', {}, ...
+    'f', {}, ...
+    'g', {});
+
+%disp('Testing Buffer: ');
+%disp(bufferStruct);
+
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH- %
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH- END BUFFER REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH %
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH- %
+
+for f = nInitialFrame : stepRoi : nTotalFrames
+    
+    array_inds = [];
+    labelDraw=[];
+    
+    imgfrNew = imread(sprintf('../Frames/frame%.4d.jpg', ...
+        baseNum + f));
+%     disp('REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-');
+%     disp('f');
+%     disp(f);
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH %
+    % Buffer Shift Lines
+    % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH %
+    
+    % if the buffer is not full, use only the length of the buffer
+    if numFrameIterations < 8
+        numFrameIterationsAux = maxBufferNum;
+        
+        
+    else
+        %if iterations > 7 the buffer is full and it's possible to shift
+        numFrameIterationsAux = numFrameIterations;
+        
+        bufferStruct(1).g = bufferStruct(1).f;
+        bufferStruct(1).f = bufferStruct(1).e;
+        bufferStruct(1).e = bufferStruct(1).d;
+        bufferStruct(1).d = bufferStruct(1).c;
+        bufferStruct(1).c = bufferStruct(1).b;
+        bufferStruct(1).b = bufferStruct(1).a;
+        
+        
+        
+    end
+    
+    
+    %for mb = numFrameIterationsAux : -1 : 2
+    %
+    %bufferStruct(1).a = 1;
+    %s(1).b=3
+    %end
+    
+    % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH %
+    % END Buffer Shift Lines
+    % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH %
+    
+    sprintf('ROI %d',f);
+    hold off
+    
+    % imshow(imgfrNew); %% Real image with rectangles - Background
+    hold on
+    
+    imgdif = (abs(double(imgfrNew(:,:,1)))>thr_global) | ...
+        (abs(double(imgfrNew(:,:,2))-double(imgfrNew(:,:,1)))>thr_diff) | ...
+        (abs(double(imgfrNew(:,:,3))-double(imgfrNew(:,:,1)))>thr_diff);
+    
+    
+    bw = imclose(imgdif,se);
+    str = sprintf('Frame: %d',f);
+    title(str);
+    
+    % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH- %
+    %imshow(bw);  %%Mete Background preto ao mesmo tempo
+    % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH- %
+    
+    % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH- %
+    imshow(imgfrNew);  %%
+    % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH- %
+    
+    [lb num]=bwlabel(bw);
+    regionProps = regionprops(lb,'area','FilledImage','Centroid');
+    
+    %inds = find(minArea < [regionProps.Area] < maxArea);
+    inds = [];
+    for k = 1 : length(regionProps)
+        if find([regionProps(k).Area] < maxArea & [regionProps(k).Area] > minArea)
+            inds = [inds k];
+        end
+    end
+    
+    regnum = length(inds);
+    % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH- %
+    %     disp('f/inds/regnum');
+    %     disp(f);
+    %     disp(inds);
+    %     disp(regnum);
+    % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH- %
+    if regnum
+        
+        % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH %
+        % Spatial Validation Algorithm
+        % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH %
+        
+        
+        for k=1:regnum
+            for m=1:regnum
+                if k ~= m
+                    %run all inds to search for inds that are too close
+                    vesselAX = regionProps(inds(k)).Centroid(1,1);
+                    vesselAY = regionProps(inds(k)).Centroid(1,2);
+                    vesselBX = regionProps(inds(m)).Centroid(1,1);
+                    vesselBY = regionProps(inds(m)).Centroid(1,2);
+                    
+                    distBetweenVessels = [vesselAX, vesselAY; ...
+                        vesselBX, vesselBY];
+                    pdistBetweenVessels = pdist(distBetweenVessels, 'euclidean');
+                    %                    disp('dist');
+                    %                    disp(pdistBetweenVessels);
+                    
+                    % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH- Test Grafic Distance REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH- %
+    
+%                     boatDistance = [];
+% 
+%                     x = boatDistance; % Distance
+%                     y1 = sin(x);       % SRE
+%                     y2 = sin(x-0.25);  % TVA
+%                     y3 = sin(x-0.5);   % Something
+% 
+%                     figure
+%                     plot(x,y1,x,y2,'REPLACE_WITH_DASH_DASH',x,y3,':')
+                    % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH- %
+                    
+                    if pdistBetweenVessels < distanceBetweenVessels
+                        %disp('entrou');
+                        %remove inds k and m from inds
+                        
+                        %ind = [1 4 7] ; % indices to be removed
+                        %A(ind) = []; % remove
+                        
+                        %array_inds array to put vessels that are too close
+                        %to other vessels
+                        
+                        %detecting if k and m are in array_inds
+                        arrayDetection = ismember([k m],array_inds);
+                        if f == 82
+                            f=f;
+                        end
+                        %k is not find on array_inds
+                        if arrayDetection(1,1) == 0
+                            array_inds = [array_inds k];
+                        end
+                        
+                        %m is not find on array_inds
+                        if arrayDetection(1,2) == 0
+                            array_inds = [array_inds m];
+                        end
+                    end
+                end
+            end
+        end
+        
+        % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH %
+        % END Spatial Validation Algorithm
+        % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH %
+        
+        %         disp('regnumCalisto');
+        %         disp(regnum);
+        %all vessels processed
+        allInds = inds;
+        % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH- %
+        %         disp('array_inds');
+        %         disp(array_inds);
+        %         disp('allInds');
+        %         disp(allInds);
+        % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH- %
+        %         allInds = unique(array_inds);
+        %         withoutDuplicates = unique(array_inds);
+        allInds(array_inds) = [];
+        %         allInds = withoutDuplicates;
+        
+        % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH- %
+        
+        %         disp('POSallInds');
+        %         disp(allInds);
+        % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH- %
+        
+        % NOW allInds have only vessels aproved by spacial validation algoritm
+        
+        %%USE if spacial validation is not used, to check if is true
+        %array_inds = inds;
+        
+        % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH- %
+        %%%Temporal Buffer
+        % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH- %
+        %%change buffer lines from 1-6 to 2-7
+        %%frame 7 will be overwriten
+        
+        
+        
+        % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH %
+        % Temporal Validation Algorithm
+        % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH %
+        
+        % Converting from lin col to rectangle format
+        % bufferStruct
+        regnumAllInds = length(allInds);
+        %if existes regions to filter with temporal algorithm
+        if regnumAllInds
+            arrAllIndsRectangleAux = [];
+            for j = 1 : regnumAllInds
+                [lin, col] = find(lb == allInds(j));
+                upLPoint = min([lin col]);
+                dWindow  = max([lin col]) - upLPoint + 1;
+                %structBufferLine = []; %% First buffer line TOFIX
+                rectangleAux = [fliplr(upLPoint) fliplr(dWindow)];
+                
+                % add the rectangleAux to arrAllIndsRectangleAux
+                arrAllIndsRectangleAux = [arrAllIndsRectangleAux; rectangleAux];
+%                 disp ('arrAllIndsRectangleAux');
+%                 disp (arrAllIndsRectangleAux);
+                
+            end
+            % add the arrAllIndsRectangleAux to buffer first line
+
+            
+            %if numFrameIterations < 7 buffer is not full
+            if numFrameIterations < 7
+                numFrameIterationsAux = maxBufferNum;
+                
+                
+                %%%%%%%%%%%%To REcode
+                if numFrameIterations == 0
+                    bufferStruct(1).g = arrAllIndsRectangleAux;
+                end
+                if numFrameIterations == 1
+                    bufferStruct(1).f = arrAllIndsRectangleAux;
+                end
+                if numFrameIterations == 2
+                    bufferStruct(1).e = arrAllIndsRectangleAux;
+                end
+                if numFrameIterations == 3
+                    bufferStruct(1).d = arrAllIndsRectangleAux;
+                end
+                if numFrameIterations == 4
+                    bufferStruct(1).c = arrAllIndsRectangleAux;
+                end
+                if numFrameIterations == 5
+                    bufferStruct(1).b = arrAllIndsRectangleAux;
+                end
+            else
+                
+                bufferStruct(1).a = arrAllIndsRectangleAux;
+                
+%                 disp('My Buffer Struct: ');
+%                 disp(bufferStruct(1));
+            end
+            %             disp('My Buffer Struct: ');
+            %             disp(bufferStruct(1).g);
+            
+            
+            %%%%%%%%%%%%EndTo REcode
+            % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH- %
+            %   filtering vessels to know what to print
+            % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH- %
+            % bufferStruct(1).a has the possible vessels to print
+            
+            %%calculates the number of occurencies of vessels in Layers A on
+            %%other Layers
+            
+%             disp ('bufferStruct(1).a');
+%             disp (bufferStruct(1).a);
+            [colA,n] = size(bufferStruct(1).a);
+            vesselOcurrencies = zeros(1,colA);
+            
+            
+            vesselOcurrencies = vesselOcurrencies + foundOnBufferLayer(bufferStruct(1).a,bufferStruct(1).b);
+            
+             vesselOcurrencies = vesselOcurrencies + foundOnBufferLayer(bufferStruct(1).a,bufferStruct(1).c);
+            
+            vesselOcurrencies = vesselOcurrencies + foundOnBufferLayer(bufferStruct(1).a,bufferStruct(1).d);
+            
+            vesselOcurrencies = vesselOcurrencies + foundOnBufferLayer(bufferStruct(1).a,bufferStruct(1).e);
+            
+%             vesselOcurrencies = vesselOcurrencies + foundOnBufferLayer(bufferStruct(1).a,bufferStruct(1).f);
+%             
+%             vesselOcurrencies = vesselOcurrencies + foundOnBufferLayer(bufferStruct(1).a,bufferStruct(1).g);
+            %%NOW vesselOcurrencies has counter with numbers of ocurrencies in
+            %%of the vessels in first layer with the rest of the buffer
+            
+            indsTemp = [];
+            for r=1:colA
+                  % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-3 out of 5REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH %
+                if vesselOcurrencies(1,r) > 3
+                    indsTemp = [indsTemp r];
+                end
+            end
+            %BufferStruct is incremented because buffer will be incremented
+            numFrameIterations = numFrameIterations + 1;
+            
+            
+            
+            
+            
+            % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH %
+            % END Temporal Validation Algorithm
+            % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH %
+            
+            % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH- %
+            %doing boxes on approved inds
+            % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH- %
+            
+            %regnumAllInds = length(allInds); % change variables
+            
+            %number of yellow boxes to print
+            %         if numFrameIterations > 7
+            [nIndsTemp,m] = size(indsTemp);
+            %             regnumbufferStruct = m;
+            
+            %%%if bufferStruct(1).a is a matrix
+            %             if regnumbufferStruct > 1
+            %if regnumAllInds % change variables
+            %structBufferLine = [];
+            for j=1: 1: nIndsTemp % change variables
+                %                 [lin, col] = find(lb == allInds(j));
+                %                 upLPoint = min([lin col]);
+                %                 dWindow  = max([lin col]) - upLPoint + 1;
+                %structBufferLine = []; %% First buffer line TOFIX
+                
+                %                 rectangle('Position',[fliplr(upLPoint) fliplr(dWindow)],'EdgeColor',[1 1 0],...
+                %                     'linewidth',2);
+%                 disp ('Element to draw');
+%                 disp (bufferStruct(1).a(indsTemp(1,j),:));
+            if nIndsTemp == 2
+                z = f;
+            end
+                vesselTrailNow = bufferStruct(1).a(indsTemp(1,j),:);
+        
+                
+                %%%Temporal Buffer
+                %%add regionProps to j(index) of the buffer
+            end
+            
+            %             else
+            %                 reglist = struct([]);
+            %             end
+        end
+    end
+    
+    [linLabel colLabel] = find (vesselLabels(:,1) == f+14);
+    
+    if colLabel == 1
+        labelDraw = [labelDraw vesselLabels(linLabel,2:5)];
+    end
+    isnotempty = 0;
+    if ~isempty(labelDraw)
+        if ~isempty(vesselTrailNow)
+            isnotempty = 1;
+            %se o width for negativo
+            if labelDraw(3) < 0
+                labelDraw(1)=labelDraw(1) + labelDraw(3);
+                labelDraw(3) = abs(labelDraw(3));
+            end
+            %se o height for negativo
+            if labelDraw(4) < 0
+                labelDraw(2)=labelDraw(2) + labelDraw(4);
+                labelDraw(4) = abs(labelDraw(4));
+            end
+            
+            vesselTrail = [vesselTrail; f+1 labelDraw];
+            vesselTrailSREShift = [vesselTrailSREShift; f * 1.10 + 1 labelDraw];
+            
+            disp('Vessel Trail SRE Shift: ');
+            disp(vesselTrailSREShift);
+            
+            disp('Vessel Trail Normal: ');
+            disp(vesselTrail);
+            
+            A = [f+1; labelDraw(1); labelDraw(2); labelDraw(3); labelDraw(4)];
+            
+            vector=[vector bboxOverlapRatio(labelDraw, vesselTrailNow)];            
+            rectangle('Position', labelDraw,'EdgeColor',[0 1 0],'linewidth',2);
+            
+            labelDraw1R = labelDraw;
+            labelDraw1R(1) = labelDraw(1) + labelDraw(1) * 0.10;
+            labelDraw1R(3) = labelDraw(3) * 0.80;
+            labelDraw1R(4) = labelDraw(4) * 0.80;
+            
+            labelDraw1U = labelDraw;
+            labelDraw1U(2) = labelDraw(2) + labelDraw(2) * 0.10;
+            labelDraw1U(3) = labelDraw(3) * 0.80;
+            labelDraw1U(4) = labelDraw(4) * 0.80;
+            
+            labelDraw1D = labelDraw;
+            labelDraw1D(1) = labelDraw(1) + labelDraw(1) * 0.10;
+            labelDraw1D(2) = labelDraw(2) + labelDraw(2) * 0.10;
+            labelDraw1D(3) = labelDraw(3) * 0.80;
+            labelDraw1D(4) = labelDraw(4) * 0.80;
+            
+            labelDraw2R = labelDraw;
+            labelDraw2R(1) = labelDraw(1) + labelDraw(1) * 0.10;
+            labelDraw2R(3) = labelDraw(3) * 0.90;
+            labelDraw2R(4) = labelDraw(4) * 0.90;
+            
+            labelDraw2U = labelDraw;
+            labelDraw2U(2) = labelDraw(2) + labelDraw(2) * 0.10;
+            labelDraw2U(3) = labelDraw(3) * 0.90;
+            labelDraw2U(4) = labelDraw(4) * 0.90;
+            
+            labelDraw2D = labelDraw;
+            labelDraw2D(1) = labelDraw(1) + labelDraw(1) * 0.10;
+            labelDraw2D(2) = labelDraw(2) + labelDraw(2) * 0.10;
+            labelDraw2D(3) = labelDraw(3) * 0.90;
+            labelDraw2D(4) = labelDraw(4) * 0.90;
+            
+            labelDraw3R = labelDraw;
+            labelDraw3R(1) = labelDraw(1) + labelDraw(1) * 0.10;
+            labelDraw3R(3) = labelDraw(3) * 1.10;
+            labelDraw3R(4) = labelDraw(4) * 1.10;
+            
+            labelDraw3U = labelDraw;
+            labelDraw3U(2) = labelDraw(2) + labelDraw(2) * 0.10;
+            labelDraw3U(3) = labelDraw(3) * 1.10;
+            labelDraw3U(4) = labelDraw(4) * 1.10;
+            
+            labelDraw3D = labelDraw;
+            labelDraw3D(1) = labelDraw(1) + labelDraw(1) * 0.10;
+            labelDraw3D(2) = labelDraw(2) + labelDraw(2) * 0.10;
+            labelDraw3D(3) = labelDraw(3) * 1.10;
+            labelDraw3D(4) = labelDraw(4) * 1.10;
+            
+            labelDraw4R = labelDraw;
+            labelDraw4R(1) = labelDraw(1) + labelDraw(1) * 0.10;
+            labelDraw4R(3) = labelDraw(3) * 1.20;
+            labelDraw4R(4) = labelDraw(4) * 1.20;
+            
+            labelDraw4U = labelDraw;
+            labelDraw4U(2) = labelDraw(2) + labelDraw(2) * 0.10;
+            labelDraw4U(3) = labelDraw(3) * 1.20;
+            labelDraw4U(4) = labelDraw(4) * 1.20;
+            
+            labelDraw4D = labelDraw;
+            labelDraw4D(1) = labelDraw(1) + labelDraw(1) * 0.10;
+            labelDraw4D(2) = labelDraw(2) + labelDraw(2) * 0.10;
+            labelDraw4D(3) = labelDraw(3) * 1.20;
+            labelDraw4D(4) = labelDraw(4) * 1.20;
+            
+            rectangle('Position',vesselTrailNow,'EdgeColor',[1 1 0],...
+                    'linewidth',2);
+                
+            
+            
+        else
+            vector=[vector 0];
+        end 
+    else
+        vector=[vector 0];
+    end
+    
+%     mFigureSRE = figure('Name','SRE')
+%     title('Graphic')
+%     xlabel('Distance')    % x-axis label
+%     ylabel('Percentage')  % y-axis label
+%     plot(vesselTrailNow);
+%     grid on
+%     grid minor
+    %xlim([0 1000]); % x-axis limits
+    %ylim([-0.4 0.8]); % y-axis limits
+    
+    
+    
+    drawnow
+   
+end
+% mFigure = figure('Name','IoU')
+% title(ax1,'Graphic')
+% xlabel('???????') % x-axis label
+% ylabel('Ratio') % y-axis label
+% plot(vector);
+% grid on
+% grid minor
+%xlim([0 1000]); % x-axis limits
+%ylim([-0.4 0.8]); % y-axis limits
+
+mFigureSRE = figure('Name','SRE: Success Plot')
+title('Graphic')
+xlabel('Distance')    % x-axis label
+ylabel('Frames')      % y-axis label
+plot(labelDraw1R);
+grid on
+grid minor
+
+mFigureSRE = figure('Name','SRE: Success Plot')
+title('Graphic')
+xlabel('Distance')    % x-axis label
+ylabel('Frames')      % y-axis label
+plot(labelDraw1U);
+grid on
+grid minor
+
+mFigureSRE = figure('Name','SRE: Success Plot')
+title('Graphic')
+xlabel('Distance')    % x-axis label
+ylabel('Frames')      % y-axis label
+plot(labelDraw1D);
+grid on
+grid minor
+
+mFigureSRE = figure('Name','SRE: Success Plot')
+title('Graphic')
+xlabel('Distance')    % x-axis label
+ylabel('Frames')      % y-axis label
+plot(labelDraw2R);
+grid on
+grid minor
+
+mFigureSRE = figure('Name','SRE: Success Plot')
+title('Graphic')
+xlabel('Distance')    % x-axis label
+ylabel('Frames')      % y-axis label
+plot(labelDraw2U);
+grid on
+grid minor
+
+mFigureSRE = figure('Name','SRE: Success Plot')
+title('Graphic')
+xlabel('Distance')    % x-axis label
+ylabel('Frames')      % y-axis label
+plot(labelDraw2D);
+grid on
+grid minor
+
+mFigureSRE = figure('Name','SRE: Success Plot')
+title('Graphic')
+xlabel('Distance')    % x-axis label
+ylabel('Frames')      % y-axis label
+plot(labelDraw3R);
+grid on
+grid minor
+
+mFigureSRE = figure('Name','SRE: Success Plot')
+title('Graphic')
+xlabel('Distance')    % x-axis label
+ylabel('Frames')      % y-axis label
+plot(labelDraw3U);
+grid on
+grid minor
+
+mFigureSRE = figure('Name','SRE: Success Plot')
+title('Graphic')
+xlabel('Distance')    % x-axis label
+ylabel('Frames')      % y-axis label
+plot(labelDraw3D);
+grid on
+grid minor
+
+mFigureSRE = figure('Name','SRE: Success Plot')
+title('Graphic')
+xlabel('Distance')    % x-axis label
+ylabel('Frames')      % y-axis label
+plot(labelDraw4R);
+grid on
+grid minor
+
+mFigureSRE = figure('Name','SRE: Success Plot')
+title('Graphic')
+xlabel('Distance')    % x-axis label
+ylabel('Frames')      % y-axis label
+plot(labelDraw4U);
+grid on
+grid minor
+
+mFigureSRE = figure('Name','SRE: Success Plot')
+title('Graphic')
+xlabel('Distance')    % x-axis label
+ylabel('Frames')      % y-axis label
+plot(labelDraw4D);
+grid on
+grid minor
+
+
+end
+
+
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH %
+% Function foundOnBufferLayer( layerA, layerN )
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH %
+
+%input layer a and other layer and as output vector with number of
+%proximities found
+function bufferCount = foundOnBufferLayer( layerA, layerN )
+%%%Layer A is bufferStruct(1).a
+%%%if bufferStruct(1).a is a matrix
+[p,q] = size(layerA);
+[r,s] = size(layerN);
+colLayerA = p;
+colLayerN = r;
+bufferCount = zeros(1,p);
+distanceBetweenVessels = 50;
+%LayerA is a Matrix
+
+%k index in buffer.a
+for k=1:colLayerA
+    isFirstLayer = false;
+    for m=1:colLayerN
+        
+        vesselA = layerA(k,:);
+        vesselN = layerN(m,:);
+        %search if A(k) and N(m) vessels are close
+        vesselAX = vesselA(1)+vesselA(3)/2;
+        vesselAY = vesselA(2)+vesselA(4)/2;
+        vesselNX = vesselN(1)+vesselN(3)/2;
+        vesselNY = vesselN(2)+vesselN(4)/2;
+        distBetweenVessels = [vesselAX, vesselAY; ...
+            vesselNX, vesselNY];
+        pdistBetweenVessels = pdist(distBetweenVessels, 'euclidean');
+        
+        if pdistBetweenVessels < distanceBetweenVessels
+            isFirstLayer = true;
+            if isFirstLayer == true
+                bufferCount(k) = bufferCount(k) + 1;
+            end
+        end
+    end
+end
+
+end
+
+
+##### SOURCE END #####
+--></body></html>
