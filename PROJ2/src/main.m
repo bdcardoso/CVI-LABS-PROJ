@@ -21,7 +21,7 @@ nInitialFrame = 0000;  % Initial Boat: 12
 
 thr_global = 180; % 180
 
-thr_diff = 18;    % 18 or 60 fails detecting the boat sometimes
+thr_diff = 25;    % 18 or 60 fails detecting the boat sometimes
 
 minArea = 50;  % 50 or 100
 maxArea = 1000; % 1000? maybe
@@ -93,9 +93,9 @@ bufferStruct = struct('a', {}, ...
 % ------------------------------------------------------- %
 
 for f = nInitialFrame : stepRoi : nTotalFrames
-    if f > 500
-       break; 
-    end
+    %if f > 500
+     %  break; 
+    %end
     array_inds = [];
     labelDraw=[];
     
@@ -199,6 +199,7 @@ for f = nInitialFrame : stepRoi : nTotalFrames
                 end
             end
         end
+
         
         % ------------------------------------------------------ %
         % END Spatial Validation Algorithm
