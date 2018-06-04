@@ -24,7 +24,7 @@ thr_global = 180; % 180
 
 thr_diff = 25;    % 18 %60 fails detecting the boat sometimes
 
-minArea = 100;  % 100
+minArea = 50;  % 100
 maxArea = 1000; % 1000
 %alfa = 0.10;    % 0.10
 
@@ -152,7 +152,7 @@ for f = nInitialFrame : stepRoi : nTotalFrames
     sprintf('ROI %d',f);
     hold off
     
-    % imshow(imgfrNew); %% Real image with rectangles - Background
+    imshow(imgfrNew); %% Real image with rectangles - Background
     hold on
     
     imgdif = (abs(double(imgfrNew(:,:,1)))>thr_global) | ...
@@ -209,21 +209,6 @@ for f = nInitialFrame : stepRoi : nTotalFrames
                     distBetweenVessels = [vesselAX, vesselAY; ...
                         vesselBX, vesselBY];
                     pdistBetweenVessels = pdist(distBetweenVessels, 'euclidean');
-                    %                    disp('dist');
-                    %                    disp(pdistBetweenVessels);
-                    
-                    % ----------- Test Grafic Distance ------------------- %
-    
-%                     boatDistance = [];
-% 
-%                     x = boatDistance; % Distance
-%                     y1 = sin(x);       % SRE
-%                     y2 = sin(x-0.25);  % TVA
-%                     y3 = sin(x-0.5);   % Something
-% 
-%                     figure
-%                     plot(x,y1,x,y2,'--',x,y3,':')
-                    % --------------------------------------------------- %
                     
                     if pdistBetweenVessels < distanceBetweenVessels
                         %disp('entrou');
@@ -237,9 +222,7 @@ for f = nInitialFrame : stepRoi : nTotalFrames
                         
                         %detecting if k and m are in array_inds
                         arrayDetection = ismember([k m],array_inds);
-                        if f == 82
-                            f=f;
-                        end
+
                         %k is not find on array_inds
                         if arrayDetection(1,1) == 0
                             array_inds = [array_inds k];
@@ -375,17 +358,17 @@ for f = nInitialFrame : stepRoi : nTotalFrames
             vesselOcurrencies = vesselOcurrencies + foundOnBufferLayer(bufferStruct(1).a,bufferStruct(1).d);
             
             vesselOcurrencies = vesselOcurrencies + foundOnBufferLayer(bufferStruct(1).a,bufferStruct(1).e);
-            
-%             vesselOcurrencies = vesselOcurrencies + foundOnBufferLayer(bufferStruct(1).a,bufferStruct(1).f);
+           
+            vesselOcurrencies = vesselOcurrencies + foundOnBufferLayer(bufferStruct(1).a,bufferStruct(1).f);
 %             
-%             vesselOcurrencies = vesselOcurrencies + foundOnBufferLayer(bufferStruct(1).a,bufferStruct(1).g);
+            vesselOcurrencies = vesselOcurrencies + foundOnBufferLayer(bufferStruct(1).a,bufferStruct(1).g);
             %%NOW vesselOcurrencies has counter with numbers of ocurrencies in
             %%of the vessels in first layer with the rest of the buffer
             
             indsTemp = [];
             for r=1:colA
                   % -----------------3 out of 5-------------------- %
-                if vesselOcurrencies(1,r) > 3
+                if vesselOcurrencies(1,r) > 4
                     indsTemp = [indsTemp r];
                 end
             end
@@ -464,11 +447,11 @@ for f = nInitialFrame : stepRoi : nTotalFrames
             vesselTrail = [vesselTrail; f+1 labelDraw];
             vesselTrailSREShift = [vesselTrailSREShift; f * 1.10 + 1 labelDraw];
             
-            disp('Vessel Trail SRE Shift: ');
-            disp(vesselTrailSREShift);
+            %disp('Vessel Trail SRE Shift: ');
+            %disp(vesselTrailSREShift);
             
-            disp('Vessel Trail Normal: ');
-            disp(vesselTrail);
+            %disp('Vessel Trail Normal: ');
+            %disp(vesselTrail);
             
             A = [f+1; labelDraw(1); labelDraw(2); labelDraw(3); labelDraw(4)];
             
