@@ -311,7 +311,7 @@ for f = nInitialFrame : stepRoi : nTotalFrames
             indsTemp = [];
             for r=1:colA
                   % -----------------3 out of 5-------------------- %
-                if vesselOcurrencies(1,r) > 3
+                if vesselOcurrencies(1,r) > 2
                     indsTemp = [indsTemp r];
                 end
             end
@@ -449,14 +449,14 @@ for f = nInitialFrame : stepRoi : nTotalFrames
 end
 
 mFigure = figure('Name','IoU')
-title(ax1,'Graphic')
-xlabel('???????') % x-axis label
+title('Graphic')
+xlabel('Frames') % x-axis label
 ylabel('Ratio') % y-axis label
 plot(vector);
 grid on
 grid minor
-xlim([0 1000]); % x-axis limits
-ylim([-0.4 0.8]); % y-axis limits
+xlim([0 400]); % x-axis limits
+ylim([-0.4 1]); % y-axis limits
 
 mFigureSRE = figure('Name','SRE: Success Plot')
 title('Graphic')
