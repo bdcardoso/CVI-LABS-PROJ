@@ -11,7 +11,10 @@ load vesselLabels.txt;
 RegionBuffer = [];
 stepRoi = 4;
 
-%baseBkg = 13; % Initial Frame: 0 %
+% ---------------------- ROI ---------------------------- %
+% Remove object intersection
+% Faz as caixinhas
+
 baseNum = 13;
 
 % To use txt values use nVesselLabels = nFrames + 1 %
@@ -38,10 +41,12 @@ mainFigure = figure(1);
 vesselTrail = [];
 vesselTrailSREShift = [];
 vesselTrailNow = [];
+
 %matrix  
 % 0 1 0  _
 % 1 1 1   |
 % 0 1 0   v
+
 se = strel('disk',3);
 vector=[];
 maxBufferNum = 7;
@@ -54,12 +59,6 @@ fprintf(fileID,'%6s %2s %6s %10s %9s\n','Frame Number','X','Y','Width','Height')
 
 
 % ---------------------- END Const ---------------------- %
-
-% ------------------------------------------------------- %
-
-% ---------------------- ROI ---------------------------- %
-% Remove object intersection
-% Faz as caixinhas
 
 % ------------------------------------------------------- %
 % --------------------- BUFFER -------------------------- %
@@ -83,16 +82,11 @@ bufferStruct = struct('a', {}, ...
     'f', {}, ...
     'g', {});
 
-
-
 % ------------------------------------------------------- %
 % ------------------- END BUFFER ------------------------ %
 % ------------------------------------------------------- %
 
 for f = nInitialFrame : stepRoi : nTotalFrames
-    %if f > 100
-       %break; 
-    %end
     array_inds = [];
     labelDraw=[];
     
@@ -144,11 +138,11 @@ for f = nInitialFrame : stepRoi : nTotalFrames
 	% HOW TO SEE THE MOVIE IN FRAMES? IN BALCK&WHITE OR REAL VIDEO?
 	
     % ----------------------------------------------------------- %
-    imshow(bw);  %%Mete Background preto, bom para ver threshold
+    %imshow(bw);  %%Mete Background preto, bom para ver threshold
     % ----------------------------------------------------------- %
     
     % ----------------------------------------------------------- %
-    %imshow(imgfrNew);  %%Faz o mesmo video mas com cor
+    imshow(imgfrNew);  %%Faz o mesmo video mas com cor
     % ----------------------------------------------------------- %
     
     [lb num]=bwlabel(bw);
@@ -294,15 +288,10 @@ for f = nInitialFrame : stepRoi : nTotalFrames
             
             
             vesselOcurrencies = vesselOcurrencies + foundOnBufferLayer(bufferStruct(1).a,bufferStruct(1).b);
-            
             vesselOcurrencies = vesselOcurrencies + foundOnBufferLayer(bufferStruct(1).a,bufferStruct(1).c);
-            
-            vesselOcurrencies = vesselOcurrencies + foundOnBufferLayer(bufferStruct(1).a,bufferStruct(1).d);
-            
-            vesselOcurrencies = vesselOcurrencies + foundOnBufferLayer(bufferStruct(1).a,bufferStruct(1).e);
-           
-            vesselOcurrencies = vesselOcurrencies + foundOnBufferLayer(bufferStruct(1).a,bufferStruct(1).f);
-            
+            vesselOcurrencies = vesselOcurrencies + foundOnBufferLayer(bufferStruct(1).a,bufferStruct(1).d);            
+            vesselOcurrencies = vesselOcurrencies + foundOnBufferLayer(bufferStruct(1).a,bufferStruct(1).e);           
+            vesselOcurrencies = vesselOcurrencies + foundOnBufferLayer(bufferStruct(1).a,bufferStruct(1).f);            
             vesselOcurrencies = vesselOcurrencies + foundOnBufferLayer(bufferStruct(1).a,bufferStruct(1).g);
             
             %%NOW vesselOcurrencies has counter with numbers of ocurrencies in
@@ -311,7 +300,7 @@ for f = nInitialFrame : stepRoi : nTotalFrames
             indsTemp = [];
             for r=1:colA
                   % -----------------3 out of 5-------------------- %
-                if vesselOcurrencies(1,r) > 2
+                if vesselOcurrencies(1,r) > 4
                     indsTemp = [indsTemp r];
                 end
             end
@@ -326,9 +315,7 @@ for f = nInitialFrame : stepRoi : nTotalFrames
             % ----------------------------------------------------------- %
             %doing boxes on approved inds
             % ----------------------------------------------------------- %
-            
-            %regnumAllInds = length(allInds); % change variables
-            
+                        
             %number of yellow boxes to print
             [nIndsTemp,m] = size(indsTemp);
 
@@ -448,15 +435,15 @@ for f = nInitialFrame : stepRoi : nTotalFrames
    
 end
 
-mFigure = figure('Name','IoU')
+mFigure = figure('Name','RATIO')
 title('Graphic')
-xlabel('Frames') % x-axis label
+xlabel('#FRAMES') % x-axis label
 ylabel('Ratio') % y-axis label
 plot(vector);
 grid on
 grid minor
 xlim([0 400]); % x-axis limits
-ylim([-0.4 1]); % y-axis limits
+ylim([0 1]); % y-axis limits
 
 mFigureSRE = figure('Name','SRE: Success Plot')
 title('Graphic')
@@ -466,93 +453,6 @@ plot(labelDraw1R);
 grid on
 grid minor
 
-mFigureSRE = figure('Name','SRE: Success Plot')
-title('Graphic')
-xlabel('Distance')    % x-axis label
-ylabel('Frames')      % y-axis label
-plot(labelDraw1U);
-grid on
-grid minor
-
-mFigureSRE = figure('Name','SRE: Success Plot')
-title('Graphic')
-xlabel('Distance')    % x-axis label
-ylabel('Frames')      % y-axis label
-plot(labelDraw1D);
-grid on
-grid minor
-
-mFigureSRE = figure('Name','SRE: Success Plot')
-title('Graphic')
-xlabel('Distance')    % x-axis label
-ylabel('Frames')      % y-axis label
-plot(labelDraw2R);
-grid on
-grid minor
-
-mFigureSRE = figure('Name','SRE: Success Plot')
-title('Graphic')
-xlabel('Distance')    % x-axis label
-ylabel('Frames')      % y-axis label
-plot(labelDraw2U);
-grid on
-grid minor
-
-mFigureSRE = figure('Name','SRE: Success Plot')
-title('Graphic')
-xlabel('Distance')    % x-axis label
-ylabel('Frames')      % y-axis label
-plot(labelDraw2D);
-grid on
-grid minor
-
-mFigureSRE = figure('Name','SRE: Success Plot')
-title('Graphic')
-xlabel('Distance')    % x-axis label
-ylabel('Frames')      % y-axis label
-plot(labelDraw3R);
-grid on
-grid minor
-
-mFigureSRE = figure('Name','SRE: Success Plot')
-title('Graphic')
-xlabel('Distance')    % x-axis label
-ylabel('Frames')      % y-axis label
-plot(labelDraw3U);
-grid on
-grid minor
-
-mFigureSRE = figure('Name','SRE: Success Plot')
-title('Graphic')
-xlabel('Distance')    % x-axis label
-ylabel('Frames')      % y-axis label
-plot(labelDraw3D);
-grid on
-grid minor
-
-mFigureSRE = figure('Name','SRE: Success Plot')
-title('Graphic')
-xlabel('Distance')    % x-axis label
-ylabel('Frames')      % y-axis label
-plot(labelDraw4R);
-grid on
-grid minor
-
-mFigureSRE = figure('Name','SRE: Success Plot')
-title('Graphic')
-xlabel('Distance')    % x-axis label
-ylabel('Frames')      % y-axis label
-plot(labelDraw4U);
-grid on
-grid minor
-
-mFigureSRE = figure('Name','SRE: Success Plot')
-title('Graphic')
-xlabel('Distance')    % x-axis label
-ylabel('Frames')      % y-axis label
-plot(labelDraw4D);
-grid on
-grid minor
 
 fclose(fileID);
 end
