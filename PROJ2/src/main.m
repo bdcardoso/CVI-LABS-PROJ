@@ -27,7 +27,7 @@ minArea = 50;  % 50 or 100
 maxArea = 1000; % 1000? maybe
 
 %1cm=58pixes(units)
-distanceBetweenVessels = 80; % 58? or 80? 
+distanceBetweenVessels = 100; % 58? or 80? 
 
 bufferArr = [];
 reglist = [];
@@ -51,7 +51,7 @@ numFrameIterationsAux = 0;
 %Creating Output_labelling.txt but we don't put anything inside
 fileID = fopen('Output_labelling.txt','wb');
 fprintf(fileID,'%6s %2s %6s %10s %9s\n','Frame Number','X','Y','Width','Height');
-fclose(fileID);
+
 
 numberOfRegionsAccepted = 0;
 
@@ -93,8 +93,8 @@ bufferStruct = struct('a', {}, ...
 % ------------------------------------------------------- %
 
 for f = nInitialFrame : stepRoi : nTotalFrames
-    %if f > 500
-     %  break; 
+    %if f > 100
+       %break; 
     %end
     array_inds = [];
     labelDraw=[];
@@ -141,6 +141,8 @@ for f = nInitialFrame : stepRoi : nTotalFrames
     str = sprintf('Frame: %d',f);
     title(str);
     
+	% HOW TO SEE THE MOVIE IN FRAMES? IN BALCK&WHITE OR REAL VIDEO?
+	
     % ----------------------------------------------------------- %
     imshow(bw);  %%Mete Background preto, bom para ver threshold
     % ----------------------------------------------------------- %
@@ -333,11 +335,7 @@ for f = nInitialFrame : stepRoi : nTotalFrames
 
             
             for j=1: 1: nIndsTemp % change variables
-                if nIndsTemp == 2
-                    z = f;
-                end
                 vesselTrailNow = bufferStruct(1).a(indsTemp(1,j),:);
-        
             end
         end
     end
@@ -349,30 +347,28 @@ for f = nInitialFrame : stepRoi : nTotalFrames
     end
     isnotempty = 0;
     if ~isempty(labelDraw)
+		%se o width for negativo
+		if labelDraw(3) < 0
+			labelDraw(1)=labelDraw(1) + labelDraw(3);
+			labelDraw(3) = abs(labelDraw(3));
+		end
+		%se o height for negativo
+		if labelDraw(4) < 0
+			labelDraw(2)=labelDraw(2) + labelDraw(4);
+			labelDraw(4) = abs(labelDraw(4));
+		end
+		rectangle('Position', labelDraw,'EdgeColor',[0 1 0],'linewidth',2);
         if ~isempty(vesselTrailNow)
             isnotempty = 1;
-            %se o width for negativo
-            if labelDraw(3) < 0
-                labelDraw(1)=labelDraw(1) + labelDraw(3);
-                labelDraw(3) = abs(labelDraw(3));
-            end
-            %se o height for negativo
-            if labelDraw(4) < 0
-                labelDraw(2)=labelDraw(2) + labelDraw(4);
-                labelDraw(4) = abs(labelDraw(4));
-            end
             
             vesselTrail = [vesselTrail; f+1 labelDraw];
             vesselTrailSREShift = [vesselTrailSREShift; f * 1.10 + 1 labelDraw];
             
-            disp('Vessel Trail SRE Shift: ');
-            disp(vesselTrailSREShift);
-            
-            disp('Vessel Trail Normal: ');
-            disp(vesselTrail);
-            
+			fprintf(fileID,'%6d %9d %6d %9d %9d\n',f,vesselTrailNow(1),vesselTrailNow(2),vesselTrailNow(3),vesselTrailNow(4));
+            disp(vesselTrailNow);
+           
             vector=[vector bboxOverlapRatio(labelDraw, vesselTrailNow)];            
-            rectangle('Position', labelDraw,'EdgeColor',[0 1 0],'linewidth',2);
+            
             
             labelDraw1R = labelDraw;
             labelDraw1R(1) = labelDraw(1) + labelDraw(1) * 0.10;
@@ -560,7 +556,7 @@ plot(labelDraw4D);
 grid on
 grid minor
 
-disp(numberOfRegionsAccepted);
+fclose(fileID);
 end
 
 
@@ -578,7 +574,7 @@ function bufferCount = foundOnBufferLayer( layerA, layerN )
 colLayerA = p;
 colLayerN = r;
 bufferCount = zeros(1,p);
-distanceBetweenVessels = 50;
+distanceBetweenVessels = 80;
 %LayerA is a Matrix
 
 %k index in buffer.a
