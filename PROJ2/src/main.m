@@ -53,9 +53,6 @@ fileID = fopen('Output_labelling.txt','wb');
 fprintf(fileID,'%6s %2s %6s %10s %9s\n','Frame Number','X','Y','Width','Height');
 
 
-numberOfRegionsAccepted = 0;
-
-
 % ---------------------- END Const ---------------------- %
 
 % ------------------------------------------------------- %
@@ -138,6 +135,9 @@ for f = nInitialFrame : stepRoi : nTotalFrames
     
     
     bw = imclose(imgdif,se);
+    bw = imclose(imgdif,se);
+    bw = imclose(imgdif,se);
+    bw = imclose(imgdif,se);
     str = sprintf('Frame: %d',f);
     title(str);
     
@@ -158,7 +158,6 @@ for f = nInitialFrame : stepRoi : nTotalFrames
     for k = 1 : length(regionProps)
         if find([regionProps(k).Area] < maxArea & [regionProps(k).Area] > minArea)
             inds = [inds k];
-            numberOfRegionsAccepted = numberOfRegionsAccepted + 1;
         end
     end
     
@@ -303,7 +302,7 @@ for f = nInitialFrame : stepRoi : nTotalFrames
             vesselOcurrencies = vesselOcurrencies + foundOnBufferLayer(bufferStruct(1).a,bufferStruct(1).e);
            
             vesselOcurrencies = vesselOcurrencies + foundOnBufferLayer(bufferStruct(1).a,bufferStruct(1).f);
-%             
+            
             vesselOcurrencies = vesselOcurrencies + foundOnBufferLayer(bufferStruct(1).a,bufferStruct(1).g);
             
             %%NOW vesselOcurrencies has counter with numbers of ocurrencies in
@@ -312,7 +311,7 @@ for f = nInitialFrame : stepRoi : nTotalFrames
             indsTemp = [];
             for r=1:colA
                   % -----------------3 out of 5-------------------- %
-                if vesselOcurrencies(1,r) >3
+                if vesselOcurrencies(1,r) > 3
                     indsTemp = [indsTemp r];
                 end
             end
@@ -365,7 +364,6 @@ for f = nInitialFrame : stepRoi : nTotalFrames
             vesselTrailSREShift = [vesselTrailSREShift; f * 1.10 + 1 labelDraw];
             
 			fprintf(fileID,'%6d %9d %6d %9d %9d\n',f,vesselTrailNow(1),vesselTrailNow(2),vesselTrailNow(3),vesselTrailNow(4));
-            disp(vesselTrailNow);
            
             vector=[vector bboxOverlapRatio(labelDraw, vesselTrailNow)];            
             
@@ -450,15 +448,15 @@ for f = nInitialFrame : stepRoi : nTotalFrames
    
 end
 
-% mFigure = figure('Name','IoU')
-% title(ax1,'Graphic')
-% xlabel('???????') % x-axis label
-% ylabel('Ratio') % y-axis label
-% plot(vector);
-% grid on
-% grid minor
-%xlim([0 1000]); % x-axis limits
-%ylim([-0.4 0.8]); % y-axis limits
+mFigure = figure('Name','IoU')
+title(ax1,'Graphic')
+xlabel('???????') % x-axis label
+ylabel('Ratio') % y-axis label
+plot(vector);
+grid on
+grid minor
+xlim([0 1000]); % x-axis limits
+ylim([-0.4 0.8]); % y-axis limits
 
 mFigureSRE = figure('Name','SRE: Success Plot')
 title('Graphic')
